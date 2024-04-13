@@ -2,11 +2,14 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import React, { useState } from "react";
 import "../styles/login.css";
+// import { GlobalStateContect } from "../GlobalStateContext";
 const Login: React.FC = () => {
+  // const { isLoggedIn, setIsLoggedIn } = useContext(GlobalStateContect);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [result, setResult] = useState<any>({});
+  const [result, setResult] = useState<any>(null);
+  const [confirmed, setConfirmed] = useState<boolean>(false);
   // interface Login {
   //   username: string;
   //   password: string;
@@ -20,12 +23,19 @@ const Login: React.FC = () => {
   function handleConfirmPasswordChange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
+    
     setConfirmPassword(event.target.value);
+   
   }
   async function formSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
       // const loginInfo:Login={username,password}
+       if (password !== confirmPassword) {
+      alert("the password didn't match each other");
+      return;
+    }
+    setConfirmed(true);
       const resultV = await axios.get(
         `http://localhost:5000/login/?${username}&&${password}`,
         {
@@ -37,6 +47,7 @@ const Login: React.FC = () => {
       );
       // console.log(resultV);
       setResult(resultV.data);
+      // setIsLoggedIn(true);
     } catch (error: any) {
       // console.log(error);
       setResult(error.response.data);
@@ -82,7 +93,12 @@ const Login: React.FC = () => {
           <p>
             don't have an account ? <Link to="/signup">signup</Link>
           </p>
-          {result && <p>{JSON.stringify(result.message)}</p>}
+          {result && confirmed && (
+            <p>
+              {username} you have
+              {JSON.stringify(result.message)}
+            </p>
+          )}
         </form>
       </div>
     </div>

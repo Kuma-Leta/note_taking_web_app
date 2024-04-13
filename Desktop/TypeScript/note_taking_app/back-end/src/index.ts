@@ -52,7 +52,7 @@ app.get("/login", async (req: Request, res: Response) => {
       if (result) {
         res.status(200).json({
           status: "success",
-          message: "User logged in successfully",
+          message: " logged in successfully",
           data: result,
         });
       } else {

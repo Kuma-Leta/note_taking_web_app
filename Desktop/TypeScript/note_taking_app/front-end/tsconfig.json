@@ -7,7 +7,9 @@
     "skipLibCheck": true,
     "outDir": "./dist",
     /* Bundler mode */
-    "moduleResolution": "Bundler",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+
     // "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,

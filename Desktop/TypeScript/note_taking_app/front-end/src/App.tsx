@@ -2,9 +2,12 @@
 import Signup from "./components/signup";
 import Login from "./components/Login";
 import Home from "./components/home";
+import PreviousNotes from "./components/PreviousNotes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React from "react";
+// import { GlobalStateContect } from "./GlobalStateContext";
 const App: React.FC = () => {
+  // const { isLoggedIn } = useContext(GlobalStateContect);
   return (
     <div>
       {/* <Home /> */}
