@@ -2,14 +2,21 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import React, { useState } from "react";
 import "../styles/login.css";
+
+// import { createContext,useContext } from "react";
 // import { GlobalStateContect } from "../GlobalStateContext";
-const Login: React.FC = () => {
+interface childProps {
+  updateFunction: (value: boolean) => void;
+}
+const Login: React.FC<childProps> = ({ updateFunction }) => {
   // const { isLoggedIn, setIsLoggedIn } = useContext(GlobalStateContect);
+
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [result, setResult] = useState<any>(null);
   const [confirmed, setConfirmed] = useState<boolean>(false);
+  // const [isLoggedIn,setIsLoggedIn]=useState<boolean>(false)
   // interface Login {
   //   username: string;
   //   password: string;
@@ -23,36 +30,33 @@ const Login: React.FC = () => {
   function handleConfirmPasswordChange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {
-    
     setConfirmPassword(event.target.value);
-   
   }
   async function formSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
       // const loginInfo:Login={username,password}
-       if (password !== confirmPassword) {
-      alert("the password didn't match each other");
-      return;
-    }
-    setConfirmed(true);
-      const resultV = await axios.get(
-        `http://localhost:5000/login/?${username}&&${password}`,
-        {
-          params: {
-            username: username,
-            password: password,
-          },
-        }
-      );
+      if (password !== confirmPassword) {
+        alert("the password didn't match each other");
+        return;
+      }
+      setConfirmed(true);
+      const resultV = await axios.get(`http://localhost:5000/login/`, {
+        params: {
+          username: username,
+          password: password,
+        },
+      });
       // console.log(resultV);
       setResult(resultV.data);
-      // setIsLoggedIn(true);
+      updateFunction(true);
     } catch (error: any) {
+      // setIsLoggedIn(true);
       // console.log(error);
       setResult(error.response.data);
     }
   }
+
   return (
     <div className="login">
       <div className="loginForm">
@@ -104,4 +108,5 @@ const Login: React.FC = () => {
     </div>
   );
 };
+
 export default Login;

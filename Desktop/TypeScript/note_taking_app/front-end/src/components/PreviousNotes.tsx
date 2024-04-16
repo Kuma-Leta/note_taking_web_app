@@ -2,7 +2,7 @@ import React from "react";
 const PreviousNotes: React.FC = () => {
   return (
     <>
-      <div> here Is Notes </div>
+      <div> here are the previous Notes </div>
     </>
   );
 };
