@@ -1,21 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/addNotes.css";
 
 const AddNotes: React.FC = () => {
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const formSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  };
+
   return (
     <>
       <div className="note_container">
         <div>page to add NOTES</div>
-        <form>
+        <form onSubmit={formSubmitHandler}>
           <div className="title">
             <label htmlFor="title">add title</label>
-            <input type="text" name="title" />
+            <input
+              type="text"
+              placeholder=" add your title here"
+              name="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
           <div className="content">
             <label htmlFor="content"> add your notes here</label>
-            <textarea name="content" />
+            <textarea
+              name="content"
+              placeholder="add your content here"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
           </div>
-          <input type="submit" value={"save"} />
+          <div className="submit">
+            <input type="submit" value={"save"} />
+          </div>
         </form>
       </div>
       <div className="background_video_container">
