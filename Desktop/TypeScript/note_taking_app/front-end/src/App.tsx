@@ -2,6 +2,7 @@
 import Signup from "./components/signup";
 import Login from "./components/Login";
 import Home from "./components/home";
+import AddNotes from "./components/AddNotes";
 // import { createContext,useContext, useState } from "react";
 import PreviousNotes from "./components/PreviousNotes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -22,7 +23,7 @@ const App: React.FC = () => {
       {/* <Home /> */}
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<AddNotes />} />
           <Route
             path="/login"
             element={
