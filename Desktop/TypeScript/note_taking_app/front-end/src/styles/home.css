@@ -1,0 +1,40 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: aliceblue;
+}
+.home_container {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+.noteImage {
+  padding: 1rem;
+  min-height: 100vh;
+}
+.noteImage img {
+  width: 100%;
+  height: 100%;
+  object-position: center;
+  object-fit: cover;
+}
+.home_left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 2rem;
+}
+.links_container {
+  display: flex;
+  column-gap: 2rem;
+}
+.links_container a {
+  text-decoration: none;
+  color: white;
+  background-color: rgb(216, 30, 111);
+  padding: 0.5rem;
+  font-size: 1.2rem;
+}
