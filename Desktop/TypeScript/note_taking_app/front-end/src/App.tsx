@@ -5,15 +5,18 @@ import Home from "./components/home";
 // import { createContext,useContext, useState } from "react";
 import PreviousNotes from "./components/PreviousNotes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // import { GlobalStateContect } from "./GlobalStateContext";
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const updateLoginStatus = (loginStatus: boolean) => {
     setIsLoggedIn(loginStatus);
-    console.log(isLoggedIn);
+    // console.log(isLoggedIn);
   };
+  useEffect(() => {
+    console.log("isLoggedIn:", isLoggedIn);
+  }, [isLoggedIn]);
   return (
     <div>
       {/* <Home /> */}
@@ -21,7 +24,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
-            path={isLoggedIn ? "/prevNotes" : "/login"}
+            path="/login"
             element={
               isLoggedIn ? (
                 <PreviousNotes />
