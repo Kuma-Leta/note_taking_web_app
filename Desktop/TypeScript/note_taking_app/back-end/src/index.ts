@@ -83,7 +83,7 @@ const NoteSchema = new Schema<Note & Document>({
   content: {
     type: String,
     required: true,
-    minlength: 50,
+    minlength: 10,
   },
 });
 const noteModel = mongoose.model("Notes", NoteSchema);
@@ -111,11 +111,24 @@ app.post("/addNotes", async (req: Request, res: Response) => {
         Notes_to_be_added,
       },
     });
-  } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      message: "bad request something went wrong",
-    });
+  } catch (error: any) {
+    if (error.name === "ValidationError") {
+      // Extract validation error messages
+      const validationErrors = Object.values(error.errors).map(
+        (err: any) => err.message
+      );
+      return res.status(400).json({
+        status: "fail",
+        message: "Validation error",
+        errors: validationErrors,
+      });
+    } else {
+      // For other types of errors
+      return res.status(500).json({
+        status: "error",
+        message: "Internal server error",
+      });
+    }
   }
 });
 app.post("/signup", async (req: Request, res: Response) => {
