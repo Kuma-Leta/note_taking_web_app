@@ -77,7 +77,7 @@ const NoteSchema = new Schema<Note & Document>({
   title: {
     type: String,
     required: true,
-    minlength: 10,
+    minlength: 5,
     maxlength: 50,
   },
   content: {
