@@ -70,7 +70,52 @@ app.get("/login", async (req: Request, res: Response) => {
     });
   }
 });
+interface Note {
+  title: string;
+  content: string;
+}
+const NoteSchema = new Schema<Note & Document>({
+  title: {
+    type: String,
+    required: true,
+    minlength: 10,
+    maxlength: 50,
+  },
+  content: {
+    type: String,
+    required: true,
+    minlength: 50,
+  },
+});
+const noteModel = mongoose.model("Notes", NoteSchema);
 
+app.get("/getNotes", async (req: Request, res: Response) => {
+  try {
+    const NoteResult = await noteModel.find();
+    res.status(200).json({
+      status: "success",
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      message: "Note can not be found",
+    });
+  }
+});
+app.post("/addNotes", async (req: Request, res: Response) => {
+  try {
+    noteModel.create(req.body);
+    res.status(201).json({
+      status: "success",
+      message: "Note saved successfully",
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: "bad request something went wrong",
+    });
+  }
+});
 app.post("/signup", async (req: Request, res: Response) => {
   try {
     console.log(req.body);

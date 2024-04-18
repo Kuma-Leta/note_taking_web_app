@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import "../styles/addNotes.css";
+import axios from "axios";
 
 const AddNotes: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const formSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const formSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    // try {
+
+    // } catch (error) {
+
+    // }
   };
 
   return (
