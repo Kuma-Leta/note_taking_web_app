@@ -91,8 +91,10 @@ const noteModel = mongoose.model("Notes", NoteSchema);
 app.get("/getNotes", async (req: Request, res: Response) => {
   try {
     const NoteResult = await noteModel.find();
+    console.log(NoteResult);
     res.status(200).json({
       status: "success",
+      NoteResult,
     });
   } catch (error) {
     res.status(404).json({
