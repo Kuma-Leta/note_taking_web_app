@@ -48,8 +48,8 @@ form .content {
   align-items: center;
 }
 form .content textarea {
-  width: 90%;
-  height: 40vh;
+  width: 70%;
+  height: 60vh;
   display: flex;
   justify-content: center;
   align-items: center;

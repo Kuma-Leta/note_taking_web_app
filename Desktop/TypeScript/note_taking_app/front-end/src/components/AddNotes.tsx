@@ -8,18 +8,19 @@ const AddNotes: React.FC = () => {
   }
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [result, setResult] = useState<object>({});
+  const [result, setResult] = useState<any>(null);
   const formSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const notes: Note = { title, content };
+      const notes: Note = { title: title, content: content };
       const Response = await axios.post(
         "http://localhost:5000/addNotes",
         notes
       );
       setResult(Response.data);
       console.log(Response);
-    } catch (error) {
+    } catch (error: any) {
+      setResult(error.response.data);
       console.log(error);
     }
   };
@@ -52,7 +53,7 @@ const AddNotes: React.FC = () => {
             <input type="submit" value={"save"} />
           </div>
         </form>
-        {result && <p>{JSON.stringify(result)}</p>}
+        {result && <p>{JSON.stringify(result.message)}</p>}
       </div>
       <div className="background_video_container">
         <video autoPlay loop muted>
