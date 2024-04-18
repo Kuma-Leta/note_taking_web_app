@@ -1,21 +1,31 @@
 import React, { useState } from "react";
 import "../styles/addNotes.css";
 import axios from "axios";
-
 const AddNotes: React.FC = () => {
+  interface Note {
+    title: string;
+    content: string;
+  }
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [result, setResult] = useState<object>({});
   const formSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // try {
-
-    // } catch (error) {
-
-    // }
+    try {
+      const notes: Note = { title, content };
+      const Response = await axios.post(
+        "http://localhost:5000/addNotes",
+        notes
+      );
+      setResult(Response.data);
+      console.log(Response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <>
+    <div>
       <div className="note_container">
         <div>page to add NOTES</div>
         <form onSubmit={formSubmitHandler}>
@@ -42,13 +52,14 @@ const AddNotes: React.FC = () => {
             <input type="submit" value={"save"} />
           </div>
         </form>
+        {result && <p>{JSON.stringify(result)}</p>}
       </div>
       <div className="background_video_container">
         <video autoPlay loop muted>
           <source src="/note_taking.mp4" type="video/mp4" />
         </video>
       </div>
-    </>
+    </div>
   );
 };
 export default AddNotes;
