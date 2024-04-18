@@ -23,14 +23,14 @@ const AddNotes: React.FC = () => {
             <label htmlFor="title">add title</label>
             <input
               type="text"
-              placeholder=" add your title here"
+              placeholder=" write your title here"
               name="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
           <div className="content">
-            <label htmlFor="content"> add your notes here</label>
+            <label htmlFor="content"> write your notes here</label>
             <textarea
               name="content"
               placeholder="add your content here"

@@ -54,6 +54,7 @@ form .content textarea {
   justify-content: center;
   align-items: center;
   text-align: center;
+  border-radius: 1rem;
 }
 form .submit input {
   width: 5rem;

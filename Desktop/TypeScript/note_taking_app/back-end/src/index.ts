@@ -48,7 +48,6 @@ app.get("/login", async (req: Request, res: Response) => {
         username: username,
         password: password,
       });
-
       if (result) {
         res.status(200).json({
           status: "success",
@@ -104,10 +103,13 @@ app.get("/getNotes", async (req: Request, res: Response) => {
 });
 app.post("/addNotes", async (req: Request, res: Response) => {
   try {
-    noteModel.create(req.body);
+    const Notes_to_be_added = await noteModel.create(req.body);
     res.status(201).json({
       status: "success",
       message: "Note saved successfully",
+      result: {
+        Notes_to_be_added,
+      },
     });
   } catch (error) {
     res.status(400).json({
