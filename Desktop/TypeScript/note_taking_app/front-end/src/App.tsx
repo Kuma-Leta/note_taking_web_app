@@ -23,7 +23,7 @@ const App: React.FC = () => {
       {/* <Home /> */}
       <Router>
         <Routes>
-          <Route path="/" element={<PreviousNotes />} />
+          <Route path="/" element={<Home />} />
           <Route
             path="/login"
             element={
@@ -35,6 +35,8 @@ const App: React.FC = () => {
             }
           />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/previousNotes" element={<PreviousNotes />} />
+          <Route path="/addNotes" element={<AddNotes />} />
         </Routes>
       </Router>
     </div>

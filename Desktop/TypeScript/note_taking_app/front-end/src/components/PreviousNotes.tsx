@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "../styles/previousNotes.css";
+import AddNotes from "./AddNotes";
 interface Note {
   title: string;
   content: string;
@@ -20,15 +22,18 @@ const PreviousNotes: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <h1>WELLCOME TO HWJC NOTE TAKING WEB APP</h1>
-      {notes.map((note, index) => (
-        <div key={index}>
-          <h2>{note.title}</h2>
-          <p>{note.content}</p>
-        </div>
-      ))}
-    </>
+    <div className="container">
+      <h1 className="wellcome">WELLCOME TO HWJC NOTE TAKING WEB APP</h1>
+      <div className="notes">
+        {notes.map((note, index) => (
+          <button className="eachNote" key={index}>
+            <h2 className="title">{note.title}</h2>
+            <p>{note.content}</p>
+          </button>
+        ))}
+      </div>
+      <AddNotes />
+    </div>
   );
 };
 export default PreviousNotes;
