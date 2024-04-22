@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../styles/addNotes.css";
 import axios from "axios";
+
 const AddNotes: React.FC = () => {
+  const { added, setAdded } = useContext(myContext);
   interface Note {
     title: string;
     content: string;
@@ -19,8 +21,11 @@ const AddNotes: React.FC = () => {
       );
       setResult(Response.data);
       console.log(Response);
+      // console.log(updateNote);
+      setAdded(true);
     } catch (error: any) {
-      setResult(error.response.data);
+      setResult(error.response?.data);
+
       console.log(error);
     }
   };
@@ -53,7 +58,7 @@ const AddNotes: React.FC = () => {
             <input type="submit" value={"save"} />
           </div>
         </form>
-        {result && <p>{JSON.stringify(result.message)}</p>}
+        {result && <p>{result.message}</p>}
       </div>
       <div className="background_video_container">
         <video autoPlay loop muted>

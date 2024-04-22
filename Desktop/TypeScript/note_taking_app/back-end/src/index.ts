@@ -121,7 +121,7 @@ app.post("/addNotes", async (req: Request, res: Response) => {
       );
       return res.status(400).json({
         status: "fail",
-        message: "Validation error",
+        message: "Insert the right Note please",
         errors: validationErrors,
       });
     } else {
@@ -137,7 +137,9 @@ app.post("/signup", async (req: Request, res: Response) => {
   try {
     console.log(req.body);
     const signup = await SignupModel.create(req.body);
-    res.status(201).json({ message: "successfully signed up", data: signup });
+    res
+      .status(201)
+      .json({ message: "congrats on your account creation !", data: signup });
   } catch (error: any) {
     let statusCode = 500;
     let message: string = "internal server error";

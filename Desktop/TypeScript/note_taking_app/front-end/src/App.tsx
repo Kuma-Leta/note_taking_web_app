@@ -3,13 +3,23 @@ import Signup from "./components/signup";
 import Login from "./components/Login";
 import Home from "./components/home";
 import AddNotes from "./components/AddNotes";
+import Note from "./components/Note";
 // import { createContext,useContext, useState } from "react";
 import PreviousNotes from "./components/PreviousNotes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, Context } from "react";
 
 // import { GlobalStateContect } from "./GlobalStateContext";
+interface display {
+  added: boolean;
+  setAdded: () => void;
+}
+const myContext: Context<display> = createContext<display>({
+  added: false,
+  setAdded: () => {},
+});
 const App: React.FC = () => {
+  const [added, setAdded] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const updateLoginStatus = (loginStatus: boolean) => {
     setIsLoggedIn(loginStatus);
@@ -28,15 +38,20 @@ const App: React.FC = () => {
             path="/login"
             element={
               isLoggedIn ? (
-                <PreviousNotes />
+                <Note />
               ) : (
                 <Login updateFunction={updateLoginStatus} />
               )
             }
           />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/previousNotes" element={<PreviousNotes />} />
-          <Route path="/addNotes" element={<AddNotes />} />
+          <myContext.Provider value={{ added, setAdded }}>
+            <Route
+              path="/previousNotes"
+              element={added ? <PreviousNotes /> : <AddNotes />}
+            />
+            {/* <Route path="/addNotes" element={<AddNotes />} /> */}
+          </myContext.Provider>
         </Routes>
       </Router>
     </div>

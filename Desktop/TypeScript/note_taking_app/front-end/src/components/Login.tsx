@@ -41,7 +41,7 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
         return;
       }
       setConfirmed(true);
-      const resultV = await axios.get(`http://localhost:5000/login/`, {
+      const resultV = await axios.get(`http://localhost:5000/login`, {
         params: {
           username: username,
           password: password,

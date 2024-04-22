@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/previousNotes.css";
-import AddNotes from "./AddNotes";
+
+// import AddNotes from "./AddNotes";
+import { Link } from "react-router-dom";
 interface Note {
   title: string;
   content: string;
@@ -32,7 +34,7 @@ const PreviousNotes: React.FC = () => {
           </button>
         ))}
       </div>
-      <AddNotes />
+      <Link to="/addNotes">Add Notes</Link>
     </div>
   );
 };
