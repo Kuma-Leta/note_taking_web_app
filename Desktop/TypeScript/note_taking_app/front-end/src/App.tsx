@@ -7,19 +7,18 @@ import Note from "./components/Note";
 // import { createContext,useContext, useState } from "react";
 import PreviousNotes from "./components/PreviousNotes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import React, { useState, useEffect, createContext, Context } from "react";
+import React, { useState, useEffect } from "react";
 
 // import { GlobalStateContect } from "./GlobalStateContext";
-interface display {
-  added: boolean;
-  setAdded: () => void;
-}
-const myContext: Context<display> = createContext<display>({
-  added: false,
-  setAdded: () => {},
-});
+// interface display {
+//   added: boolean;
+//   setAdded: () => void;
+// }
+// const myContext: Context<display> = createContext<display>({
+//   added: false,
+//   setAdded: () => {},
+// });
 const App: React.FC = () => {
-  const [added, setAdded] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const updateLoginStatus = (loginStatus: boolean) => {
     setIsLoggedIn(loginStatus);
@@ -45,13 +44,8 @@ const App: React.FC = () => {
             }
           />
           <Route path="/signup" element={<Signup />} />
-          <myContext.Provider value={{ added, setAdded }}>
-            <Route
-              path="/previousNotes"
-              element={added ? <PreviousNotes /> : <AddNotes />}
-            />
-            {/* <Route path="/addNotes" element={<AddNotes />} /> */}
-          </myContext.Provider>
+          <Route path="/previousNotes" element={<PreviousNotes />} />
+          <Route path="/addNotes" element={<AddNotes />} />
         </Routes>
       </Router>
     </div>

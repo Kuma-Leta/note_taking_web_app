@@ -1,19 +1,10 @@
 import AddNotes from "./AddNotes";
+import { useMyContext } from "../myContext";
 import PreviousNotes from "./PreviousNotes";
-import React, { useState } from "react";
+import React from "react";
 const Note: React.FC = () => {
-  const [noteAdded, setNoteAdded] = useState(true);
-  const updateNoteStatus = (added: boolean) => {
-    setNoteAdded(added);
-  };
-  return (
-    <div>
-      {noteAdded ? (
-        <PreviousNotes />
-      ) : (
-        <AddNotes updateNote={updateNoteStatus} />
-      )}
-    </div>
-  );
+  const { added } = useMyContext();
+
+  return <div>{added ? <PreviousNotes /> : <AddNotes />}</div>;
 };
 export default Note;

@@ -1,9 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import "../styles/addNotes.css";
 import axios from "axios";
-
+import { useMyContext } from "../myContext";
+// interface display{
+//   added:boolean,
+//   setAdded:(value:boolean)=>void ;
+// }
 const AddNotes: React.FC = () => {
-  const { added, setAdded } = useContext(myContext);
+  const { setNoteAdded } = useMyContext();
+
   interface Note {
     title: string;
     content: string;
@@ -22,7 +27,7 @@ const AddNotes: React.FC = () => {
       setResult(Response.data);
       console.log(Response);
       // console.log(updateNote);
-      setAdded(true);
+      setNoteAdded(true);
     } catch (error: any) {
       setResult(error.response?.data);
 

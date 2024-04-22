@@ -1,11 +1,24 @@
-import { createContext, Context, useContext } from "react";
-
-interface display {
+import { createContext, useContext, useState, ReactNode } from "react";
+interface NoteToBeAdded {
   added: boolean;
-  setAdded: (value: boolean) => void;
+  setNoteAdded: (value: boolean) => void;
 }
-export const myContext: Context<display> = createContext<display>({
-  added: false,
-  setAdded: () => {},
-});
-export const useMyContext = () => useContext(myContext);
+interface NoteProviderProps {
+  children: ReactNode;
+}
+const myContext = createContext<NoteToBeAdded | undefined>(undefined);
+export const useMyContext = () => {
+  const context = useContext(myContext);
+  if (!context) {
+    throw new Error("useMyContext must be used with in provider component");
+  }
+  return context;
+};
+export const NoteProvider: React.FC<NoteProviderProps> = ({ children }) => {
+  const [added, setNoteAdded] = useState(false);
+  return (
+    <myContext.Provider value={{ added, setNoteAdded }}>
+      {children}
+    </myContext.Provider>
+  );
+};
