@@ -10,22 +10,46 @@ interface Note {
 }
 const PreviousNotes: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   useEffect(() => {
     async function getAvailableNotes() {
       try {
-        const result = await axios.get("http://localhost:5000/getNotes");
+        const result = await axios.get("http://localhost:5001/getNotes");
         setNotes(result.data.NoteResult);
-        console.log(result.data.NoteResult);
+        // console.log(result.data.NoteResult);
       } catch (error: any) {
         console.log(error);
       }
     }
     getAvailableNotes();
   }, []);
+  const handleSearchingNotes = async () => {
+    // event.preventDefault()
+    // const filteredNotes = await notes.filter((eachNote) => {
+    //   eachNote.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    //     eachNote.content.toLowerCase().includes(searchQuery.toLowerCase());
+    // });
+    const filteredNotes = await axios.get("http://localhost:5001/searchNotes", {
+      params: { searchQuery },
+    });
+    console.log(filteredNotes.data.message);
+    setNotes(filteredNotes.data.message);
+    console.log(filteredNotes);
+    setSearchQuery("");
+  };
 
   return (
     <div className="container">
       <h1 className="wellcome">WELLCOME TO HWJC NOTE TAKING WEB APP</h1>
+      <div className="searching">
+        <input
+          type="text"
+          placeholder="search by title"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button onClick={handleSearchingNotes}>submit</button>
+      </div>
       <div className="notes">
         {notes.map((note, index) => (
           <button className="eachNote" key={index}>

@@ -87,7 +87,29 @@ const NoteSchema = new Schema<Note & Document>({
   },
 });
 const noteModel = mongoose.model("Notes", NoteSchema);
+app.get("/searchNotes", async (req: Request, res: Response) => {
+  try {
+    const SearchQuery: string | undefined = req.query.searchQuery as string;
+    const regQuery = new RegExp(SearchQuery, "i");
+    if (!SearchQuery) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "search query required" });
+    }
 
+    const searchResult = await noteModel.find({
+      $or: [{ title: { $regex: regQuery } }, { content: { $regex: regQuery } }],
+    });
+    res.status(200).json({
+      status: "success",
+      message: searchResult,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ status: "error ", message: "Internal Server Error" });
+  }
+});
 app.get("/getNotes", async (req: Request, res: Response) => {
   try {
     const NoteResult = await noteModel.find();
@@ -159,7 +181,7 @@ app.post("/signup", async (req: Request, res: Response) => {
   }
 });
 // const DbString: string =
-const port: number = 5000;
+const port: number = 5001;
 app.listen(port, () => {
   console.log(
     `the server is runnning on port :${port} and 127.0.0.1 address ......`

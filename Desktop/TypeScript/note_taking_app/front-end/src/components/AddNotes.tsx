@@ -7,7 +7,7 @@ import { useMyContext } from "../myContext";
 //   setAdded:(value:boolean)=>void ;
 // }
 const AddNotes: React.FC = () => {
-  const { setNoteAdded } = useMyContext();
+  const { added, setNoteAdded } = useMyContext();
 
   interface Note {
     title: string;
@@ -21,13 +21,14 @@ const AddNotes: React.FC = () => {
     try {
       const notes: Note = { title: title, content: content };
       const Response = await axios.post(
-        "http://localhost:5000/addNotes",
+        "http://localhost:5001/addNotes",
         notes
       );
       setResult(Response.data);
       console.log(Response);
       // console.log(updateNote);
-      setNoteAdded(true);
+      setNoteAdded(false);
+      // setNoteAdded(!added);
     } catch (error: any) {
       setResult(error.response?.data);
 

@@ -41,18 +41,22 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
         return;
       }
       setConfirmed(true);
-      const resultV = await axios.get(`http://localhost:5000/login`, {
+      const resultV = await axios.get(`http://localhost:5001/login`, {
         params: {
           username: username,
           password: password,
         },
       });
-      // console.log(resultV);
+      console.log(resultV);
       setResult(resultV.data);
       updateFunction(true);
     } catch (error: any) {
       // setIsLoggedIn(true);
-      // console.log(error);
+      if (error.code === "ERR_NETWORK") {
+        setResult({ message: "Poor connection please try again" });
+        return;
+      }
+      console.log(error);
       setResult(error.response.data);
     }
   }
@@ -100,7 +104,7 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
           {result && confirmed && (
             <p>
               {username} you have
-              {JSON.stringify(result.message)}
+              {result.message}
             </p>
           )}
         </form>
