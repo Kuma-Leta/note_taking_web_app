@@ -50,3 +50,26 @@
   padding-left: 0;
   cursor: pointer;
 }
+.sign-in-with-google {
+  /* width: 80%; */
+  display: flex;
+  justify-content: center;
+}
+.sign-in-with-google button {
+  text-align: center;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid blue;
+  grid-template-columns: 30% 70%;
+  width: 80%;
+  background-color: blue;
+  color: white;
+  height: 100%;
+  border: none;
+  outline: none;
+}
+.sign-in-with-google button .google-logo {
+  background-color: white;
+  color: green;
+}

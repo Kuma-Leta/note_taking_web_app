@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import React, { useState } from "react";
 import "../styles/login.css";
+import { IoLogoGoogle } from "react-icons/io";
 
 // import { createContext,useContext } from "react";
 // import { GlobalStateContect } from "../GlobalStateContext";
@@ -53,7 +54,7 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
     } catch (error: any) {
       // setIsLoggedIn(true);
       if (error.code === "ERR_NETWORK") {
-        setResult({ message: "Poor connection please try again" });
+        setResult({ message: "something went wrong" });
         return;
       }
       console.log(error);
@@ -68,7 +69,7 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
           <h2>LOGIN</h2>
           <div>
             <input
-              placeholder="enter username"
+              placeholder="enter email"
               type="text"
               value={username}
               onChange={handleUsernameChange}
@@ -107,6 +108,14 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
               {result.message}
             </p>
           )}
+          <hr />
+          <span>or</span>
+          <div className="sign-in-with-google">
+            <button>
+              <IoLogoGoogle size={28} className="google-logo" />
+              Sign in with Google
+            </button>
+          </div>
         </form>
       </div>
     </div>

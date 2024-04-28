@@ -1,20 +1,26 @@
 import "../styles/signUp.css";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import axios from "axios";
-
+import { useEffect, useState } from "react";
+import { firebaseConfiguration } from "./firebaseConfig";
+// import axios from "axios";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 const SignUp: React.FC = () => {
-  interface signUp {
-    username: string;
-    password: string;
-  }
+  useEffect(() => {
+    firebaseConfiguration();
+  }, []);
+  // interface signUp {
+  //   email: string;
+  //   password: string;
+  // }
   // let result:object={}
-  const [username, setUsername] = useState<string>("");
+
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [result, setResult] = useState<any>(null);
-  function handleUsernameChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setUsername(event.target.value);
+  function handleEmailChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setEmail(event.target.value);
   }
   function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>) {
     setPassword(event.target.value);
@@ -24,6 +30,17 @@ const SignUp: React.FC = () => {
   ) {
     setConfirmPassword(event.target.value);
   }
+  const signupWithEmailAndPassword = async (
+    email: string,
+    password: string
+  ) => {
+    console.log(email, password);
+    const firebaseResponse = firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password);
+    console.log(firebaseResponse);
+    return firebaseResponse;
+  };
   async function SignUpSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (password !== confirmPassword) {
@@ -31,15 +48,11 @@ const SignUp: React.FC = () => {
       return;
     }
     try {
-      const signUpInfo: signUp = { username, password };
-      const response = await axios.post(
-        ` http://localhost:5000/signup`,
-        signUpInfo
-      );
-      console.log(response);
-      setResult(response.data);
+      const userCredential = await signupWithEmailAndPassword(email, password);
+      console.log(userCredential);
+      setResult(userCredential.user);
     } catch (error: any) {
-      setResult(error.response.data);
+      setResult(error.message);
     }
   }
 
@@ -50,11 +63,11 @@ const SignUp: React.FC = () => {
           <h2>SIGNUP</h2>
           <div>
             <input
-              name="username"
-              placeholder="create username"
-              type="text"
-              value={username}
-              onChange={handleUsernameChange}
+              name="email"
+              placeholder="enter your email"
+              type="email"
+              value={email}
+              onChange={handleEmailChange}
               required
             />
           </div>

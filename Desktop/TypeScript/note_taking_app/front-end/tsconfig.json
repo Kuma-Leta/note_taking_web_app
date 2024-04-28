@@ -9,7 +9,7 @@
     /* Bundler mode */
     "moduleResolution": "Node",
     "esModuleInterop": true,
-
+    "typeRoots": ["node_modules/@types", "src/types"],
     // "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
