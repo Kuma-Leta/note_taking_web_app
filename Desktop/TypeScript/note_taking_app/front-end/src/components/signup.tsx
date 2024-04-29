@@ -1,14 +1,15 @@
 import "../styles/signUp.css";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { firebaseConfiguration } from "./firebaseConfig";
+import { useState } from "react";
+import { signupWithEmailAndPassword } from "./firebaseConfig";
 // import axios from "axios";
-import firebase from "firebase/compat/app";
+// import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
+
 const SignUp: React.FC = () => {
-  useEffect(() => {
-    firebaseConfiguration();
-  }, []);
+  // useEffect(() => {
+  //   analytics();
+  // }, []);
   // interface signUp {
   //   email: string;
   //   password: string;
@@ -18,7 +19,8 @@ const SignUp: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<any>(null);
+  const [signUpSuccess, setSignupSuccess] = useState(false);
   function handleEmailChange(event: React.ChangeEvent<HTMLInputElement>) {
     setEmail(event.target.value);
   }
@@ -30,17 +32,20 @@ const SignUp: React.FC = () => {
   ) {
     setConfirmPassword(event.target.value);
   }
-  const signupWithEmailAndPassword = async (
-    email: string,
-    password: string
-  ) => {
-    console.log(email, password);
-    const firebaseResponse = firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password);
-    console.log(firebaseResponse);
-    return firebaseResponse;
-  };
+  // const signupWithEmailAndPassword = async (
+  //   email: string,
+  //   password: string
+  // ) => {
+  //   console.log(
+  //     "the email and password you have entered is:" + email,
+  //     password
+  //   );
+  //   const firebaseResponse = await firebase
+  //     .auth()
+  //     .createUserWithEmailAndPassword(email, password);
+  //   console.log(firebaseResponse);
+  //   return firebaseResponse;
+  // };
   async function SignUpSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (password !== confirmPassword) {
@@ -49,10 +54,15 @@ const SignUp: React.FC = () => {
     }
     try {
       const userCredential = await signupWithEmailAndPassword(email, password);
-      console.log(userCredential);
-      setResult(userCredential.user);
+      // console.log(userCredential.user);
+      if (userCredential) {
+        setSignupSuccess(true);
+      }
     } catch (error: any) {
-      setResult(error.message);
+      if (error.code === "auth/email-already-in-use") {
+        setError("Email is already in use.Try another instead");
+      }
+      setSignupSuccess(false);
     }
   }
 
@@ -100,9 +110,12 @@ const SignUp: React.FC = () => {
           </p>
         </form>
 
-        {result && (
-          <p className="signUpResponse">{JSON.stringify(result.message)}</p>
+        {signUpSuccess && (
+          <p className="signUpResponse">
+            Congratulations ! you have successfully created account
+          </p>
         )}
+        {error && <p className="signupError">{error}</p>}
 
         {/* <p className="signUpResponse"></p> */}
       </div>

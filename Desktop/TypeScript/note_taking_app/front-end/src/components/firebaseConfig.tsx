@@ -1,6 +1,11 @@
-import firebase from "firebase/compat/app";
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCv9Ns_BNuk0YMIqxYgwEZyjZ1eG0C0fc8",
   authDomain: "note-taking-web-app-b65f0.firebaseapp.com",
@@ -10,8 +15,23 @@ const firebaseConfig = {
   appId: "1:848847705054:web:5611909e8cd6b4378f434f",
   measurementId: "G-GR56Z8SDXV",
 };
-export const firebaseConfiguration = () => {
-  if (!firebase.apps.length) {
-    initializeApp(firebaseConfig);
-  }
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const signupWithEmailAndPassword = async (
+  email: string,
+  password: string
+) => {
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  console.log(userCredential);
+  console.log(userCredential.user);
+  return userCredential;
+  // } catch (error: any) {
+  //   console.log(error.code);
+  //   return error.code
 };
