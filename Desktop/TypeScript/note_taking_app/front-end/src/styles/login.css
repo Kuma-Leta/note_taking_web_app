@@ -73,3 +73,7 @@
   background-color: white;
   color: green;
 }
+.signInError {
+  color: red;
+  text-align: center;
+}

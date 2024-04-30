@@ -25,6 +25,7 @@ mongoose
 interface signup {
   username: string;
   password: string;
+  userId: string;
 }
 const signupSchema = new Schema<signup & Document>({
   username: {
@@ -37,16 +38,26 @@ const signupSchema = new Schema<signup & Document>({
     minlength: 6,
     required: true,
   },
+  userId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
 });
 const SignupModel = mongoose.model("Signup", signupSchema);
 app.get("/login", async (req: Request, res: Response) => {
   console.log(req.query);
-  const { username, password } = req.query;
+  const { username, password, userId } = req.query;
   try {
-    if (typeof username === "string" && typeof password === "string") {
+    if (
+      typeof username === "string" &&
+      typeof password === "string" &&
+      typeof userId === "string"
+    ) {
       const result: any = await SignupModel.findOne({
         username: username,
         password: password,
+        userId: userId,
       });
       if (result) {
         res.status(200).json({
@@ -72,6 +83,7 @@ app.get("/login", async (req: Request, res: Response) => {
 interface Note {
   title: string;
   content: string;
+  userID: string;
 }
 const NoteSchema = new Schema<Note & Document>({
   title: {
@@ -84,6 +96,10 @@ const NoteSchema = new Schema<Note & Document>({
     type: String,
     required: true,
     minlength: 10,
+  },
+  userID: {
+    type: String,
+    required: true,
   },
 });
 const noteModel = mongoose.model("Notes", NoteSchema);
@@ -112,8 +128,9 @@ app.get("/searchNotes", async (req: Request, res: Response) => {
 });
 app.get("/getNotes", async (req: Request, res: Response) => {
   try {
-    const NoteResult = await noteModel.find();
-    console.log(NoteResult);
+    console.log(req.query.userId);
+    const NoteResult = await noteModel.find({});
+    // console.log(NoteResult);
     res.status(200).json({
       status: "success",
       NoteResult,
@@ -127,6 +144,7 @@ app.get("/getNotes", async (req: Request, res: Response) => {
 });
 app.post("/addNotes", async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
     const Notes_to_be_added = await noteModel.create(req.body);
     res.status(201).json({
       status: "success",

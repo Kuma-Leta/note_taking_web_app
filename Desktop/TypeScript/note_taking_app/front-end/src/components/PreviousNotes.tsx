@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/previousNotes.css";
-
+import { useMyContext } from "../myContext";
 // import AddNotes from "./AddNotes";
 import { Link } from "react-router-dom";
 interface Note {
@@ -11,10 +11,14 @@ interface Note {
 const PreviousNotes: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { userId } = useMyContext();
   useEffect(() => {
     async function getAvailableNotes() {
       try {
-        const result = await axios.get("http://localhost:5001/getNotes");
+        console.log(userId);
+        const result = await axios.get(`http://localhost:5001/getNotes?`, {
+          params: { userId },
+        });
         setNotes(result.data.NoteResult);
         // console.log(result.data.NoteResult);
       } catch (error: any) {

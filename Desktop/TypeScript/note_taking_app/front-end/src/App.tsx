@@ -7,18 +7,20 @@ import Note from "./components/Note";
 // import { createContext,useContext, useState } from "react";
 import PreviousNotes from "./components/PreviousNotes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NoteProvider } from "./myContext";
+// import { useMyContext } from "./myContext";
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const updateLoginStatus = (loginStatus: boolean) => {
-    setIsLoggedIn(loginStatus);
-    // console.log(isLoggedIn);
+  // const {userId}=useMyContext()
+  // const [userId,setUserId]=useState<string>()
+  const updateLoginStatus = async (status: boolean) => {
+    setIsLoggedIn(status);
   };
-  useEffect(() => {
-    console.log("isLoggedIn:", isLoggedIn);
-  }, [isLoggedIn]);
+  // useEffect(() => {
+  //   console.log("isLoggedIn:", isLoggedIn);
+  // }, [isLoggedIn]);
   return (
     <div>
       {/* <Home /> */}
@@ -36,6 +38,8 @@ const App: React.FC = () => {
                 )
               }
             />
+
+            <Route path="/note" element={<Note />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/previousNotes" element={<PreviousNotes />} />
             <Route path="/addNotes" element={<AddNotes />} />

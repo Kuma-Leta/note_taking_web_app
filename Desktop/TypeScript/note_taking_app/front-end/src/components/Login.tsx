@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 import React, { useState } from "react";
 import "../styles/login.css";
 import { IoLogoGoogle } from "react-icons/io";
+import { signInWithFirebase } from "./firebaseConfig";
+import { useMyContext } from "../myContext";
 
 // import { createContext,useContext } from "react";
 // import { GlobalStateContect } from "../GlobalStateContext";
@@ -12,53 +14,49 @@ interface childProps {
 const Login: React.FC<childProps> = ({ updateFunction }) => {
   // const { isLoggedIn, setIsLoggedIn } = useContext(GlobalStateContect);
 
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [result, setResult] = useState<any>(null);
-  const [confirmed, setConfirmed] = useState<boolean>(false);
+  const [error, setError] = useState<any>(false);
+  const { setUserId } = useMyContext();
   // const [isLoggedIn,setIsLoggedIn]=useState<boolean>(false)
   // interface Login {
   //   username: string;
   //   password: string;
   // }
-  function handleUsernameChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setUsername(event.target.value);
-  }
-  function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setPassword(event.target.value);
-  }
-  function handleConfirmPasswordChange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    setConfirmPassword(event.target.value);
-  }
+  // function handleUsernameChange(event: React.ChangeEvent<HTMLInputElement>) {
+  //   setUsername(event.target.value);
+  // }
+  // function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>) {
+  //   setPassword(event.target.value);
+  // }
+  // function handleConfirmPasswordChange(
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) {
+  //   setConfirmPassword(event.target.value);
+  // }
   async function formSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
       // const loginInfo:Login={username,password}
       if (password !== confirmPassword) {
-        alert("the password didn't match each other");
+        setError("the password didn't match each other");
         return;
       }
-      setConfirmed(true);
-      const resultV = await axios.get(`http://localhost:5001/login`, {
-        params: {
-          username: username,
-          password: password,
-        },
-      });
-      console.log(resultV);
-      setResult(resultV.data);
-      updateFunction(true);
+
+      const userCredential = await signInWithFirebase(email, password);
+      console.log(userCredential);
+      if (userCredential) {
+        setResult("congratulations ! successfully Logged in");
+        setUserId(userCredential.user.uid);
+        setTimeout(() => updateFunction(true), 2000);
+      }
     } catch (error: any) {
-      // setIsLoggedIn(true);
-      if (error.code === "ERR_NETWORK") {
-        setResult({ message: "something went wrong" });
-        return;
+      if (error.code === "auth/invalid-credential") {
+        setError("OOps ! Invalid username or password");
       }
       console.log(error);
-      setResult(error.response.data);
     }
   }
 
@@ -71,8 +69,8 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
             <input
               placeholder="enter email"
               type="text"
-              value={username}
-              onChange={handleUsernameChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -80,7 +78,7 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
             <input
               placeholder="enter password"
               type="password"
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
               value={password}
               required
             />
@@ -90,7 +88,7 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
               placeholder="confirm your password"
               type="password"
               value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
           </div>
@@ -99,15 +97,13 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
               login
             </button>
           </div>
-          <p>
-            don't have an account ? <Link to="/signup">signup</Link>
-          </p>
-          {result && confirmed && (
+          {!result && (
             <p>
-              {username} you have
-              {result.message}
+              don't have an account ? <Link to="/signup">signup</Link>
             </p>
           )}
+          {result && <p>{result}</p>}
+          {error && <p className="signInError">{error}</p>}
           <hr />
           <span>or</span>
           <div className="sign-in-with-google">

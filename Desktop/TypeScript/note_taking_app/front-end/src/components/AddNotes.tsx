@@ -7,11 +7,11 @@ import { useMyContext } from "../myContext";
 //   setAdded:(value:boolean)=>void ;
 // }
 const AddNotes: React.FC = () => {
-  const { added, setNoteAdded } = useMyContext();
-
+  const { setNoteAdded, userId } = useMyContext();
   interface Note {
     title: string;
     content: string;
+    userID: string;
   }
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -19,7 +19,7 @@ const AddNotes: React.FC = () => {
   const formSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const notes: Note = { title: title, content: content };
+      const notes: Note = { title: title, content: content, userID: userId };
       const Response = await axios.post(
         "http://localhost:5001/addNotes",
         notes
