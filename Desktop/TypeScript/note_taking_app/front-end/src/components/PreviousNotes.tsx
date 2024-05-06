@@ -4,14 +4,14 @@ import "../styles/previousNotes.css";
 import { useMyContext } from "../myContext";
 // import AddNotes from "./AddNotes";
 import { Link } from "react-router-dom";
-interface Note {
-  title: string;
-  content: string;
-}
+// interface Note {
+//   title: string;
+//   content: string;
+// }
 const PreviousNotes: React.FC = () => {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [notes, setNotes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const { userId, setNoteAdded, added } = useMyContext();
+  const { userId, added } = useMyContext();
   useEffect(() => {
     async function getAvailableNotes() {
       try {
@@ -56,11 +56,14 @@ const PreviousNotes: React.FC = () => {
         <button onClick={handleSearchingNotes}>submit</button>
       </div>
       <div className="notes">
-        {notes.map((note, index) => (
-          <button className="eachNote" key={index}>
+        {notes.map((note) => (
+          <div className="eachNote" key={note._id}>
             <h2 className="titleFromDB">{note.title}</h2>
             <p className="paragraphFromDB">{note.content}</p>
-          </button>
+            <div className="editBtnContainer">
+              <button title="edit note">🖊</button>
+            </div>
+          </div>
         ))}
       </div>
     </div>

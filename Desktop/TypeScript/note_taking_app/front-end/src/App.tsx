@@ -9,6 +9,7 @@ import PreviousNotes from "./components/PreviousNotes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React, { useState } from "react";
 import { NoteProvider } from "./myContext";
+import { EditNote } from "./components/editNote";
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -36,7 +37,7 @@ const App: React.FC = () => {
                 )
               }
             />
-
+            <Route path="/editNote/:noteId" element={<EditNote />} />
             <Route path="/note" element={<Note />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/previousNotes" element={<PreviousNotes />} />

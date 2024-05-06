@@ -52,3 +52,11 @@ a {
   color: red;
   font-weight: 900;
 }
+.editBtnContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+.editBtnContainer button {
+  border-radius: 50%;
+  padding: 0.5rem;
+}
