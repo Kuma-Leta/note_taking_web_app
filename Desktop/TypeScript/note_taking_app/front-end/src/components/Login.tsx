@@ -46,7 +46,7 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
       }
 
       const userCredential = await signInWithFirebase(email, password);
-      console.log(userCredential);
+      // console.log(userCredential);
       if (userCredential) {
         setResult("congratulations ! successfully Logged in");
         setUserId(userCredential.user.uid);
@@ -56,7 +56,7 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
       if (error.code === "auth/invalid-credential") {
         setError("OOps ! Invalid Email or password");
       }
-      console.log(error);
+      // console.log(error);
     }
   }
 

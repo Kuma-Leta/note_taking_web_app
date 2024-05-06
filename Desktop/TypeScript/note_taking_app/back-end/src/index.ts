@@ -126,6 +126,44 @@ app.get("/searchNotes", async (req: Request, res: Response) => {
       .json({ status: "error ", message: "Internal Server Error" });
   }
 });
+app.put("/saveEditedNote/:id", async (req: Request, res: Response) => {
+  try {
+    const saveResult = await noteModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: req.body.title,
+        content: req.body.content,
+      },
+      { new: true }
+    );
+    if (!saveResult) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Not Found",
+      });
+    }
+    res
+      .status(200)
+      .json({ status: "success", saveResult, message: "updated successfully" });
+  } catch (error: any) {
+    console.log(error);
+  }
+});
+app.get("/getEditableNote/:id", async (req: Request, res: Response) => {
+  try {
+    const editResult = await noteModel.findById(req.params.id);
+    console.log("editable Note:", editResult);
+    if (!editResult) {
+      return res.status(404).json({ status: "fail", message: "not found" });
+    }
+    res.status(200).json({
+      status: "success",
+      result: editResult,
+    });
+  } catch (error: any) {
+    res.status(500).json({ status: "Error", message: "Internal Server Error" });
+  }
+});
 app.get("/getNotes", async (req: Request, res: Response) => {
   try {
     const USER_ID: string | undefined = req.query.userId as string;

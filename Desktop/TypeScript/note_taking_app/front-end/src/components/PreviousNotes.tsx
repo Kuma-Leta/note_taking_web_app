@@ -3,30 +3,36 @@ import axios from "axios";
 import "../styles/previousNotes.css";
 import { useMyContext } from "../myContext";
 // import AddNotes from "./AddNotes";
-import { Link } from "react-router-dom";
-// interface Note {
-//   title: string;
-//   content: string;
-// }
+import { useNavigate } from "react-router-dom";
+
+interface Note {
+  title: string;
+  content: string;
+  _id: string;
+}
 const PreviousNotes: React.FC = () => {
-  const [notes, setNotes] = useState([]);
+  const navigate = useNavigate();
+  const [notes, setNotes] = useState<Note[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const { userId, added } = useMyContext();
+  const { userId } = useMyContext();
   useEffect(() => {
     async function getAvailableNotes() {
       try {
-        console.log(added);
+        // console.log(added);
         const result = await axios.get(`http://localhost:5001/getNotes?`, {
           params: { userId },
         });
         setNotes(result.data.NoteResult);
         // console.log(result.data.NoteResult);
       } catch (error: any) {
-        console.log(error);
+        // console.log(error);
       }
     }
     getAvailableNotes();
   }, []);
+  const handleEditNote = (NoteId: string) => {
+    navigate(`/editNote/${NoteId}`);
+  };
   const handleSearchingNotes = async () => {
     // event.preventDefault()
     // const filteredNotes = await notes.filter((eachNote) => {
@@ -61,7 +67,12 @@ const PreviousNotes: React.FC = () => {
             <h2 className="titleFromDB">{note.title}</h2>
             <p className="paragraphFromDB">{note.content}</p>
             <div className="editBtnContainer">
-              <button title="edit note">🖊</button>
+              <button
+                title="edit note"
+                onClick={() => handleEditNote(note._id)}
+              >
+                🖊
+              </button>
             </div>
           </div>
         ))}

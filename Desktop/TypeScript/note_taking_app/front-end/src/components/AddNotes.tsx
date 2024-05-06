@@ -29,15 +29,15 @@ const AddNotes: React.FC = () => {
         notes
       );
       setResult(Response.data);
-      console.log(Response);
+      // console.log(Response);
       // console.log(updateNote);
       setNoteAdded(false);
-      console.log(added);
+      // console.log(added);
       // setNoteAdded(!added);
     } catch (error: any) {
       setResult(error.response?.data);
 
-      console.log(error);
+      // console.log(error);
     }
   };
 
