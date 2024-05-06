@@ -69,5 +69,11 @@ form .submit input {
 }
 form .submit {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
+  /* padding: 1rem; */
+  position: absolute;
+  right: 2rem;
+  bottom: 0;
+  width: 100%;
+  margin: auto;
 }

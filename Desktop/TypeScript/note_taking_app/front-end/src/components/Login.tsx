@@ -54,7 +54,7 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
       }
     } catch (error: any) {
       if (error.code === "auth/invalid-credential") {
-        setError("OOps ! Invalid username or password");
+        setError("OOps ! Invalid Email or password");
       }
       console.log(error);
     }

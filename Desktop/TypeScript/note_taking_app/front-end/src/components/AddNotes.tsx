@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/addNotes.css";
 import axios from "axios";
 import { useMyContext } from "../myContext";
@@ -7,7 +7,11 @@ import { useMyContext } from "../myContext";
 //   setAdded:(value:boolean)=>void ;
 // }
 const AddNotes: React.FC = () => {
-  const { setNoteAdded, userId } = useMyContext();
+  const { added, setNoteAdded, userId } = useMyContext();
+  // useEffect(() => {
+  //   setNoteAdded(true);
+  // }, []);
+  console.log(added);
   interface Note {
     title: string;
     content: string;
@@ -28,6 +32,7 @@ const AddNotes: React.FC = () => {
       console.log(Response);
       // console.log(updateNote);
       setNoteAdded(false);
+      console.log(added);
       // setNoteAdded(!added);
     } catch (error: any) {
       setResult(error.response?.data);
@@ -37,7 +42,7 @@ const AddNotes: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="addNotesMainContainer">
       <div className="note_container">
         <div>page to add NOTES</div>
         <form onSubmit={formSubmitHandler}>

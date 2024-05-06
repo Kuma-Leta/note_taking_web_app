@@ -11,11 +11,11 @@ interface Note {
 const PreviousNotes: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const { userId } = useMyContext();
+  const { userId, setNoteAdded, added } = useMyContext();
   useEffect(() => {
     async function getAvailableNotes() {
       try {
-        console.log(userId);
+        console.log(added);
         const result = await axios.get(`http://localhost:5001/getNotes?`, {
           params: { userId },
         });
@@ -52,17 +52,17 @@ const PreviousNotes: React.FC = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+
         <button onClick={handleSearchingNotes}>submit</button>
       </div>
       <div className="notes">
         {notes.map((note, index) => (
           <button className="eachNote" key={index}>
-            <h2 className="title">{note.title}</h2>
-            <p>{note.content}</p>
+            <h2 className="titleFromDB">{note.title}</h2>
+            <p className="paragraphFromDB">{note.content}</p>
           </button>
         ))}
       </div>
-      <Link to="/addNotes">Add Notes</Link>
     </div>
   );
 };

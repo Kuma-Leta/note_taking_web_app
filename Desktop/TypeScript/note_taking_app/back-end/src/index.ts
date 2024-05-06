@@ -128,8 +128,8 @@ app.get("/searchNotes", async (req: Request, res: Response) => {
 });
 app.get("/getNotes", async (req: Request, res: Response) => {
   try {
-    console.log(req.query.userId);
-    const NoteResult = await noteModel.find({});
+    const USER_ID: string | undefined = req.query.userId as string;
+    const NoteResult = await noteModel.find({ userID: USER_ID });
     // console.log(NoteResult);
     res.status(200).json({
       status: "success",

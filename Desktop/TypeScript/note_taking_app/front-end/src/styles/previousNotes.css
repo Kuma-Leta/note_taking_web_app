@@ -6,10 +6,29 @@
   gap: 1rem;
   padding: 1rem;
 }
+.searching {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+.searching input {
+  outline: none;
+  border: none;
+  background-color: black;
+  color: white;
+  height: 2rem;
+  text-align: center;
+}
 .eachNote {
+  display: grid;
   background-color: aliceblue;
   border-radius: 1rem;
   padding: 1rem;
+  width: 400px;
+  gap: 1rem;
   /* display: flex;
   justify-content: center;
   align-items: center;

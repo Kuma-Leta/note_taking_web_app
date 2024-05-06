@@ -1,0 +1,17 @@
+.addNoteBtn {
+  background-color: rgb(251, 0, 255);
+  /* width: 100%; */
+  color: white;
+  width: 5rem;
+  height: 2rem;
+  padding: 0.5rem;
+  outline: none;
+  border: none;
+  /* position: absolute; */
+  /* bottom: 0; */
+}
+.btnContainer {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}

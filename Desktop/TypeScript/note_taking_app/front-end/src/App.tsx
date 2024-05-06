@@ -9,18 +9,16 @@ import PreviousNotes from "./components/PreviousNotes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React, { useState } from "react";
 import { NoteProvider } from "./myContext";
-// import { useMyContext } from "./myContext";
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   // const {userId}=useMyContext()
   // const [userId,setUserId]=useState<string>()
   const updateLoginStatus = async (status: boolean) => {
     setIsLoggedIn(status);
   };
-  // useEffect(() => {
-  //   console.log("isLoggedIn:", isLoggedIn);
-  // }, [isLoggedIn]);
+
   return (
     <div>
       {/* <Home /> */}

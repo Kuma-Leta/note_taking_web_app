@@ -21,31 +21,7 @@ const SignUp: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<any>(null);
   const [signUpSuccess, setSignupSuccess] = useState(false);
-  function handleEmailChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setEmail(event.target.value);
-  }
-  function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setPassword(event.target.value);
-  }
-  function handleConfirmPasswordChange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    setConfirmPassword(event.target.value);
-  }
-  // const signupWithEmailAndPassword = async (
-  //   email: string,
-  //   password: string
-  // ) => {
-  //   console.log(
-  //     "the email and password you have entered is:" + email,
-  //     password
-  //   );
-  //   const firebaseResponse = await firebase
-  //     .auth()
-  //     .createUserWithEmailAndPassword(email, password);
-  //   console.log(firebaseResponse);
-  //   return firebaseResponse;
-  // };
+
   async function SignUpSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (password !== confirmPassword) {
@@ -77,7 +53,7 @@ const SignUp: React.FC = () => {
               placeholder="enter your email"
               type="email"
               value={email}
-              onChange={handleEmailChange}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
@@ -87,7 +63,7 @@ const SignUp: React.FC = () => {
               placeholder="create password"
               type="password"
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
@@ -97,7 +73,7 @@ const SignUp: React.FC = () => {
               placeholder="confirm your password"
               type="password"
               value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
           <div>
