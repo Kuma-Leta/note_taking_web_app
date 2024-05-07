@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../styles/addNotes.css";
 import axios from "axios";
 import { useMyContext } from "../myContext";
@@ -42,10 +42,10 @@ const AddNotes: React.FC = () => {
   };
 
   return (
-    <div className="addNotesMainContainer">
-      <div className="note_container">
+    <>
+      <div className="addNoteContainer">
         <div>page to add NOTES</div>
-        <form onSubmit={formSubmitHandler}>
+        <form className="addNoteForm" onSubmit={formSubmitHandler}>
           <div className="title">
             <label htmlFor="title">add title</label>
             <input
@@ -76,7 +76,7 @@ const AddNotes: React.FC = () => {
           <source src="/note_taking.mp4" type="video/mp4" />
         </video>
       </div>
-    </div>
+    </>
   );
 };
 export default AddNotes;

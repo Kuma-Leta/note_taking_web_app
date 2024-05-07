@@ -1,5 +1,5 @@
 import "../styles/signUp.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signupWithEmailAndPassword } from "./firebaseConfig";
 // import axios from "axios";
@@ -21,7 +21,7 @@ const SignUp: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<any>(null);
   const [signUpSuccess, setSignupSuccess] = useState(false);
-
+  const navigate = useNavigate();
   async function SignUpSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (password !== confirmPassword) {
@@ -34,6 +34,9 @@ const SignUp: React.FC = () => {
       if (userCredential) {
         setSignupSuccess(true);
       }
+      setTimeout(() => {
+        navigate("/signup");
+      }, 1000);
     } catch (error: any) {
       if (error.code === "auth/email-already-in-use") {
         setError("Email is already in use.Try another instead");
