@@ -1,0 +1,48 @@
+.editNoteContainer {
+  display: grid;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(163, 13, 163);
+  min-height: 100vh;
+  padding: 1rem;
+  color: white;
+}
+.editNoteForm {
+  display: grid;
+  justify-content: center;
+  gap: 1rem;
+  background-color: black;
+  width: 400px;
+  margin: auto;
+  min-height: 70vh;
+  color: white;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+.editNoteTitle,
+.editNoteContent {
+  display: grid;
+  grid-template-columns: 20% 80%;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.editNoteSubmitBtn {
+  display: flex;
+  justify-content: flex-end;
+}
+/* .editNoteContent{
+
+} */
+.editNoteSubmitBtn input {
+  width: 5rem;
+  height: 2rem;
+  background-color: rgb(126, 8, 126);
+  color: white;
+  outline: none;
+  border: none;
+}
+h1 {
+  text-align: center;
+}

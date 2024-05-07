@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, FormEvent, useState } from "react";
+import "../styles/editNote.css";
 // interface Note{
 //   _id:string;
 // title:string;
@@ -46,10 +47,10 @@ export const EditNote: React.FC = () => {
 
   return (
     <>
-      <div>
+      <div className="editNoteContainer">
         <h1>Edit Note</h1>
-        <form onSubmit={handleEditedNoteSubmission}>
-          <div>
+        <form className="editNoteForm" onSubmit={handleEditedNoteSubmission}>
+          <div className="editNoteTitle">
             <label htmlFor="title">Title</label>
             <input
               type="text"
@@ -58,7 +59,7 @@ export const EditNote: React.FC = () => {
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
-          <div>
+          <div className="editNoteContent">
             <label htmlFor="content">Content</label>
             <textarea
               name="content"
@@ -66,11 +67,13 @@ export const EditNote: React.FC = () => {
               onChange={(e) => setContent(e.target.value)}
             />
           </div>
-          <div>
+          <div className="editNoteSubmitBtn">
             <input type="submit" />
           </div>
         </form>
-        {updated && <p>note updated successfully</p>}
+        {updated && (
+          <p className="EditNoteSuccessMessage">note updated successfully</p>
+        )}
       </div>
     </>
   );
