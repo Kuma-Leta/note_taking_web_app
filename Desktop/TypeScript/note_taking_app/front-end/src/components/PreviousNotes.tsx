@@ -4,32 +4,42 @@ import "../styles/previousNotes.css";
 import { useMyContext } from "../myContext";
 // import AddNotes from "./AddNotes";
 import { useNavigate } from "react-router-dom";
-
+import { Pagination } from "./pagination";
 interface Note {
   title: string;
   content: string;
   _id: string;
+  modifiedOn: Date;
 }
 const PreviousNotes: React.FC = () => {
   const navigate = useNavigate();
   const [notes, setNotes] = useState<Note[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const { userId } = useMyContext();
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
   useEffect(() => {
     async function getAvailableNotes() {
       try {
         // console.log(added);
-        const result = await axios.get(`http://localhost:5001/getNotes?`, {
-          params: { userId },
-        });
+        const result = await axios.get(
+          `http://localhost:5001/getNotes?page=${currentPage}=`,
+          {
+            params: { userId },
+          }
+        );
         setNotes(result.data.NoteResult);
+        setTotalPages(result.data.totalNumberOfPages);
         // console.log(result.data.NoteResult);
       } catch (error: any) {
         // console.log(error);
       }
     }
     getAvailableNotes();
-  }, []);
+  }, [currentPage]);
   const handleEditNote = (NoteId: string) => {
     navigate(`/editNote/${NoteId}`);
   };
@@ -67,6 +77,16 @@ const PreviousNotes: React.FC = () => {
             <h2 className="titleFromDB">{note.title}</h2>
             <p className="paragraphFromDB">{note.content}</p>
             <div className="editBtnContainer">
+              <span>
+                modified on:
+                {new Date(note.modifiedOn).toLocaleString("en-US", {
+                  day: "numeric",
+                  month: "numeric",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
+              </span>
               <button
                 title="edit note"
                 onClick={() => handleEditNote(note._id)}
@@ -74,6 +94,11 @@ const PreviousNotes: React.FC = () => {
                 🖊
               </button>
             </div>
+            <Pagination
+              totalPages={totalPages}
+              handlePageChange={handlePageChange}
+              currentPage={currentPage}
+            />
           </div>
         ))}
       </div>

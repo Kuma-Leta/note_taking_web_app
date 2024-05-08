@@ -55,6 +55,7 @@ a {
 .editBtnContainer {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 .editBtnContainer button {
   border-radius: 50%;

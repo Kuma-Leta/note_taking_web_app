@@ -33,7 +33,7 @@ export const EditNote: React.FC = () => {
     try {
       const resultAfterEdited = await axios.put(
         `http://localhost:5001/saveEditedNote/${id}`,
-        { title, content }
+        { title, content, modifiedOn: new Date() }
       );
       console.log(resultAfterEdited);
       setUpdated(true);

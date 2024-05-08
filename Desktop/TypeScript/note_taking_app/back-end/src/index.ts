@@ -84,6 +84,7 @@ interface Note {
   title: string;
   content: string;
   userID: string;
+  modifiedOn: Date;
 }
 const NoteSchema = new Schema<Note & Document>({
   title: {
@@ -101,10 +102,17 @@ const NoteSchema = new Schema<Note & Document>({
     type: String,
     required: true,
   },
+  modifiedOn: {
+    type: Date,
+    required: true,
+  },
 });
 const noteModel = mongoose.model("Notes", NoteSchema);
 app.get("/searchNotes", async (req: Request, res: Response) => {
   try {
+    const page: number = Number(req.params.page) || 1;
+    const perPage: number = Number(req.params.pageNumber) || 10;
+    const skip = (page - 1) * perPage;
     const SearchQuery: string | undefined = req.query.searchQuery as string;
     const regQuery = new RegExp(SearchQuery, "i");
     if (!SearchQuery) {
@@ -113,9 +121,15 @@ app.get("/searchNotes", async (req: Request, res: Response) => {
         .json({ status: "error", message: "search query required" });
     }
 
-    const searchResult = await noteModel.find({
-      $or: [{ title: { $regex: regQuery } }, { content: { $regex: regQuery } }],
-    });
+    const searchResult = await noteModel
+      .find({
+        $or: [
+          { title: { $regex: regQuery } },
+          { content: { $regex: regQuery } },
+        ],
+      })
+      .skip(skip)
+      .limit(perPage);
     res.status(200).json({
       status: "success",
       message: searchResult,
@@ -133,6 +147,7 @@ app.put("/saveEditedNote/:id", async (req: Request, res: Response) => {
       {
         title: req.body.title,
         content: req.body.content,
+        modifiedOn: req.body.modifiedOn,
       },
       { new: true }
     );
@@ -166,12 +181,22 @@ app.get("/getEditableNote/:id", async (req: Request, res: Response) => {
 });
 app.get("/getNotes", async (req: Request, res: Response) => {
   try {
+    const currentPage = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const pageCount = await noteModel.countDocuments();
+    const totalNumberOfPages = Math.ceil(pageCount / limit);
+    const skip = (currentPage - 1) * limit;
     const USER_ID: string | undefined = req.query.userId as string;
-    const NoteResult = await noteModel.find({ userID: USER_ID });
+    const NoteResult = await noteModel
+      .find({ userID: USER_ID })
+      .skip(skip)
+      .limit(limit)
+      .sort({ modifiedOn: -1 });
     // console.log(NoteResult);
     res.status(200).json({
       status: "success",
       NoteResult,
+      totalNumberOfPages,
     });
   } catch (error) {
     res.status(404).json({

@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 .background_video_container {
   position: fixed;
@@ -10,9 +11,65 @@
 }
 .addNoteContainer {
   min-height: 100vh;
-  background-color: rgba(63, 59, 59, 0.406);
+  background-color: rgba(39, 37, 37, 0.895);
   color: white;
   font-weight: 900;
   display: grid;
-  /* gap: 1rem; */
+  row-gap: 2rem;
+  flex-direction: column;
+  width: 100%;
+  padding: 1rem;
+  /* align-items: center; */
+  justify-content: center;
+}
+.addNoteForm {
+  width: 100%;
+  padding: 1rem;
+  align-items: center;
+  justify-content: center;
+  display: grid;
+  row-gap: 1rem;
+}
+.title {
+  display: grid;
+  grid-template-columns: 30% 70%;
+}
+.title label,
+.content label {
+  display: flex;
+  justify-content: flex-start;
+  font-size: 1rem;
+}
+.title input {
+  padding: 0.5rem;
+  outline: none;
+  border: none;
+}
+.content {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  min-height: 50vh;
+}
+.content textarea {
+  width: 400px;
+  outline: none;
+  border: none;
+  padding: 1rem;
+}
+.submit {
+  display: flex;
+  justify-content: flex-end;
+}
+.submit input {
+  width: 5rem;
+  height: 2rem;
+  background-color: rgb(165, 42, 157);
+  outline: none;
+  border: none;
+  color: white;
+}
+.addNoteSuccessMessage {
+  text-align: center;
+  color: green;
+  font-weight: 900;
 }

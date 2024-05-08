@@ -16,6 +16,7 @@ const AddNotes: React.FC = () => {
     title: string;
     content: string;
     userID: string;
+    modifiedOn: Date;
   }
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -23,7 +24,12 @@ const AddNotes: React.FC = () => {
   const formSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const notes: Note = { title: title, content: content, userID: userId };
+      const notes: Note = {
+        title: title,
+        content: content,
+        userID: userId,
+        modifiedOn: new Date(),
+      };
       const Response = await axios.post(
         "http://localhost:5001/addNotes",
         notes
@@ -44,7 +50,7 @@ const AddNotes: React.FC = () => {
   return (
     <>
       <div className="addNoteContainer">
-        <div>page to add NOTES</div>
+        <h1>page to add NOTES</h1>
         <form className="addNoteForm" onSubmit={formSubmitHandler}>
           <div className="title">
             <label htmlFor="title">add title</label>
@@ -54,6 +60,7 @@ const AddNotes: React.FC = () => {
               name="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              required
             />
           </div>
           <div className="content">
@@ -63,13 +70,15 @@ const AddNotes: React.FC = () => {
               placeholder="add your content here"
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              required
             />
           </div>
           <div className="submit">
             <input type="submit" value={"save"} />
           </div>
         </form>
-        {result && <p>{result.message}</p>}
+
+        {result && <p className="addNoteSuccessMessage">{result.message}</p>}
       </div>
       <div className="background_video_container">
         <video autoPlay loop muted>

@@ -35,7 +35,7 @@ const SignUp: React.FC = () => {
         setSignupSuccess(true);
       }
       setTimeout(() => {
-        navigate("/signup");
+        navigate("/login");
       }, 1000);
     } catch (error: any) {
       if (error.code === "auth/email-already-in-use") {
