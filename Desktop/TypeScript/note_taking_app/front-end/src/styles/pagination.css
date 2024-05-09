@@ -1,6 +1,16 @@
-.pagination {
-  background-color: blue;
+.active {
+  background-color: gold;
+  outline: none;
+  border: none;
+  width: 5rem;
+  height: 2rem;
+  padding: 0.5rem;
+  color: black;
+  font-weight: 700;
+  cursor: pointer;
 }
 .pageBtnContainer {
-  background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

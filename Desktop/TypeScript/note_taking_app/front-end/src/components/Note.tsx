@@ -15,7 +15,7 @@ const Note: React.FC = () => {
           <PreviousNotes />
           <div className="btnContainer">
             <button className="addNoteBtn" onClick={() => setNoteAdded(true)}>
-              AddNotes
+              Add Note
             </button>
           </div>
         </div>
