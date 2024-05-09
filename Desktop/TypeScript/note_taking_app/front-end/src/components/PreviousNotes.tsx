@@ -26,11 +26,12 @@ const PreviousNotes: React.FC = () => {
       try {
         // console.log(added);
         const result = await axios.get(
-          `http://localhost:5001/getNotes?page=${currentPage}=`,
+          `http://localhost:5001/getNotes?page=${currentPage}`,
           {
             params: { userId },
           }
         );
+        console.log(result);
         setNotes(result.data.NoteResult);
         setTotalPages(result.data.totalNumberOfPages);
         // console.log(result.data.NoteResult);
@@ -94,13 +95,13 @@ const PreviousNotes: React.FC = () => {
                 🖊
               </button>
             </div>
-            <Pagination
-              totalPages={totalPages}
-              handlePageChange={handlePageChange}
-              currentPage={currentPage}
-            />
           </div>
         ))}
+        <Pagination
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+          currentPage={currentPage}
+        />
       </div>
     </div>
   );

@@ -1,21 +1,28 @@
 import React from "react";
-interface paginationProps {
+
+interface PaginationProps {
   currentPage: number;
   totalPages: number;
   handlePageChange: (page: number) => void;
 }
-export const Pagination: React.FC<paginationProps> = ({
+
+export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   handlePageChange,
 }) => {
   return (
     <>
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-        <button key={page} onClick={() => handlePageChange(page)}>
-          {page}
-        </button>;
-      })}
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        <div className="pageBtnContainer" key={page}>
+          <button
+            className={`pagination ${page === currentPage ? "active" : ""}`}
+            onClick={() => handlePageChange(page)}
+          >
+            Page: {page}
+          </button>
+        </div>
+      ))}
     </>
   );
 };
