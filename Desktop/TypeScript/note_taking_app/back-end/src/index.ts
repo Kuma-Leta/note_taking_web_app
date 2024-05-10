@@ -1,4 +1,6 @@
-import express, { Express, Request, Response } from "express";
+import { auth } from "./../../front-end/src/components/firebaseConfig";
+import express, { Express, NextFunction, Request, Response } from "express";
+import * as admin from "firebase/admin";
 import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();
@@ -22,6 +24,31 @@ mongoose
   .catch((error: any) => {
     console.log(`error while connecting to  :${error}`);
   });
+declare module "express" {
+  interface Request {
+    userId?: string;
+  }
+}
+const isAuthenticated = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const idToken = req.headers.authorization?.split("Bearer")[1];
+    if (!idToken) {
+      return res.status(401).json({ message: "unauthorized " });
+    }
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    if (!decodedToken) {
+      return res.status(401).json({ message: "unauthorized " });
+    }
+    req.userId = decodedToken.uid;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: "unauthorized " });
+  }
+};
 interface signup {
   username: string;
   password: string;
@@ -108,78 +135,96 @@ const NoteSchema = new Schema<Note & Document>({
   },
 });
 const noteModel = mongoose.model("Notes", NoteSchema);
-app.get("/searchNotes", async (req: Request, res: Response) => {
-  try {
-    const page: number = Number(req.params.page) || 1;
-    const perPage: number = Number(req.params.pageNumber) || 10;
-    const skip = (page - 1) * perPage;
-    const SearchQuery: string | undefined = req.query.searchQuery as string;
-    const regQuery = new RegExp(SearchQuery, "i");
-    if (!SearchQuery) {
-      return res
-        .status(400)
-        .json({ status: "error", message: "search query required" });
-    }
+app.get(
+  "/searchNotes",
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      const page: number = Number(req.params.page) || 1;
+      const perPage: number = Number(req.params.pageNumber) || 10;
+      const skip = (page - 1) * perPage;
+      const SearchQuery: string | undefined = req.query.searchQuery as string;
+      const regQuery = new RegExp(SearchQuery, "i");
+      if (!SearchQuery) {
+        return res
+          .status(400)
+          .json({ status: "error", message: "search query required" });
+      }
 
-    const searchResult = await noteModel
-      .find({
-        $or: [
-          { title: { $regex: regQuery } },
-          { content: { $regex: regQuery } },
-        ],
-      })
-      .skip(skip)
-      .limit(perPage);
-    res.status(200).json({
-      status: "success",
-      message: searchResult,
-    });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ status: "error ", message: "Internal Server Error" });
-  }
-});
-app.put("/saveEditedNote/:id", async (req: Request, res: Response) => {
-  try {
-    const saveResult = await noteModel.findByIdAndUpdate(
-      req.params.id,
-      {
-        title: req.body.title,
-        content: req.body.content,
-        modifiedOn: req.body.modifiedOn,
-      },
-      { new: true }
-    );
-    if (!saveResult) {
-      return res.status(404).json({
-        status: "fail",
-        message: "Not Found",
+      const searchResult = await noteModel
+        .find({
+          $or: [
+            { title: { $regex: regQuery } },
+            { content: { $regex: regQuery } },
+          ],
+        })
+        .skip(skip)
+        .limit(perPage);
+      res.status(200).json({
+        status: "success",
+        message: searchResult,
       });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ status: "error ", message: "Internal Server Error" });
     }
-    res
-      .status(200)
-      .json({ status: "success", saveResult, message: "updated successfully" });
-  } catch (error: any) {
-    console.log(error);
   }
-});
-app.get("/getEditableNote/:id", async (req: Request, res: Response) => {
-  try {
-    const editResult = await noteModel.findById(req.params.id);
-    console.log("editable Note:", editResult);
-    if (!editResult) {
-      return res.status(404).json({ status: "fail", message: "not found" });
+);
+app.put(
+  "/saveEditedNote/:id",
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      const saveResult = await noteModel.findByIdAndUpdate(
+        req.params.id,
+        {
+          title: req.body.title,
+          content: req.body.content,
+          modifiedOn: req.body.modifiedOn,
+        },
+        { new: true }
+      );
+      if (!saveResult) {
+        return res.status(404).json({
+          status: "fail",
+          message: "Not Found",
+        });
+      }
+      res
+        .status(200)
+        .json({
+          status: "success",
+          saveResult,
+          message: "updated successfully",
+        });
+    } catch (error: any) {
+      console.log(error);
     }
-    res.status(200).json({
-      status: "success",
-      result: editResult,
-    });
-  } catch (error: any) {
-    res.status(500).json({ status: "Error", message: "Internal Server Error" });
   }
-});
-app.get("/getNotes", async (req: Request, res: Response) => {
+);
+app.get(
+  "/getEditableNote/:id",
+  isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      const editResult = await noteModel.findById(req.params.id);
+      console.log("editable Note:", editResult);
+      if (!editResult) {
+        return res.status(404).json({ status: "fail", message: "not found" });
+      }
+      res.status(200).json({
+        status: "success",
+        result: editResult,
+      });
+    } catch (error: any) {
+      res
+        .status(500)
+        .json({ status: "Error", message: "Internal Server Error" });
+    }
+  }
+);
+app.get("/getNotes", isAuthenticated, async (req: Request, res: Response) => {
   try {
     const currentPage = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
@@ -205,7 +250,7 @@ app.get("/getNotes", async (req: Request, res: Response) => {
     });
   }
 });
-app.post("/addNotes", async (req: Request, res: Response) => {
+app.post("/addNotes", isAuthenticated, async (req: Request, res: Response) => {
   try {
     console.log(req.body);
     const Notes_to_be_added = await noteModel.create(req.body);

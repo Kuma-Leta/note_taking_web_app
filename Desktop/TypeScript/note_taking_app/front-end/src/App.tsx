@@ -7,7 +7,7 @@ import Note from "./components/Note";
 // import { createContext,useContext, useState } from "react";
 import PreviousNotes from "./components/PreviousNotes";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import { NotFound } from "./components/NotFound";
 import React, { useState } from "react";
 import { NoteProvider } from "./myContext";
 import { EditNote } from "./components/editNote";
@@ -43,6 +43,7 @@ const App: React.FC = () => {
             <Route path="/signup" element={<Signup />} />
             <Route path="/previousNotes" element={<PreviousNotes />} />
             <Route path="/addNotes" element={<AddNotes />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </NoteProvider>
       </Router>
