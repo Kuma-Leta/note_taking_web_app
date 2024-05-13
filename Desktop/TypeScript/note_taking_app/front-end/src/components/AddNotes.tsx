@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../styles/addNotes.css";
 import axios from "axios";
 import { useMyContext } from "../myContext";
+import { useNavigate } from "react-router-dom";
 // interface display{
 //   added:boolean,
 //   setAdded:(value:boolean)=>void ;
@@ -21,6 +22,7 @@ const AddNotes: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [result, setResult] = useState<any>(null);
+  const navigate = useNavigate();
   const formSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -41,7 +43,11 @@ const AddNotes: React.FC = () => {
       // console.log(added);
       // setNoteAdded(!added);
     } catch (error: any) {
-      setResult(error.response?.data);
+      // if (error.response.data.message === "unauthorized") {
+      //   navigate("/signup");
+      // }
+      console.log(error);
+      // setResult(error.response?.data);
 
       // console.log(error);
     }

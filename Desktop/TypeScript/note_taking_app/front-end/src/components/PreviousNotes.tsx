@@ -18,6 +18,7 @@ const PreviousNotes: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const { userId } = useMyContext();
+  const [error, setError] = useState(null);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -36,7 +37,11 @@ const PreviousNotes: React.FC = () => {
         setTotalPages(result.data.totalNumberOfPages);
         // console.log(result.data.NoteResult);
       } catch (error: any) {
-        // console.log(error);
+        // if (error.response.data.message === "unauthorized") {
+        //   navigate("/signup");
+        //   return;
+        // }
+        console.log(error);
       }
     }
     getAvailableNotes();
@@ -50,13 +55,20 @@ const PreviousNotes: React.FC = () => {
     //   eachNote.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     //     eachNote.content.toLowerCase().includes(searchQuery.toLowerCase());
     // });
-    const filteredNotes = await axios.get("http://localhost:5001/searchNotes", {
-      params: { searchQuery },
-    });
-    console.log(filteredNotes.data.message);
-    setNotes(filteredNotes.data.message);
-    console.log(filteredNotes);
-    setSearchQuery("");
+    try {
+      const filteredNotes = await axios.get(
+        "http://localhost:5001/searchNotes",
+        {
+          params: { searchQuery },
+        }
+      );
+      console.log(filteredNotes.data.message);
+      setNotes(filteredNotes.data.message);
+      console.log(filteredNotes);
+      setSearchQuery("");
+    } catch (error: any) {
+      setError(error.message);
+    }
   };
 
   return (

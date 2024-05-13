@@ -1,10 +1,12 @@
-import { auth } from "./../../front-end/src/components/firebaseConfig";
+// import { auth } from "./../../front-end/src/components/firebaseConfig";
 import express, { Express, NextFunction, Request, Response } from "express";
-import * as admin from "firebase/admin";
+import * as admin from "firebase-admin";
 import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();
 import mongoose, { Schema } from "mongoose";
+import { Jwt } from "jsonwebtoken";
+import bcrypt from "bcrypt";
 const app: Express = express();
 app.use(express.json());
 app.use(cors());
@@ -29,33 +31,36 @@ declare module "express" {
     userId?: string;
   }
 }
-const isAuthenticated = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const idToken = req.headers.authorization?.split("Bearer")[1];
-    if (!idToken) {
-      return res.status(401).json({ message: "unauthorized " });
-    }
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    if (!decodedToken) {
-      return res.status(401).json({ message: "unauthorized " });
-    }
-    req.userId = decodedToken.uid;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: "unauthorized " });
-  }
-};
+// const isAuthenticated = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const idToken = req.headers.authorization?.split("Bearer")[1];
+//     if (!idToken) {
+//       return res.status(401).json({ message: "unauthorized" });
+//     }
+//     const decodedToken = await admin.auth().verifyIdToken(idToken);
+//     if (!decodedToken) {
+//       return res.status(401).json({ message: "unauthorized" });
+//     }
+//     req.userId = decodedToken.uid;
+//     next();
+//   } catch (error) {
+//     res.status(401).json({ message: "unauthorized" });
+//   }
+// };
 interface signup {
-  username: string;
+  name: string;
   password: string;
-  userId: string;
+  email: string;
+
+  createdAt: Date;
+  modifiedOn: Date;
 }
 const signupSchema = new Schema<signup & Document>({
-  username: {
+  name: {
     type: String,
     required: true,
     unique: true,
@@ -65,14 +70,53 @@ const signupSchema = new Schema<signup & Document>({
     minlength: 6,
     required: true,
   },
-  userId: {
+
+  email: {
     type: String,
-    required: true,
-    unique: true,
+    required: [true, "you must provide email"],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
+  modifiedOn: {
+    type: Date,
+    default: Date.now(),
   },
 });
 const SignupModel = mongoose.model("Signup", signupSchema);
-app.get("/login", async (req: Request, res: Response) => {
+app.post("/signup", async (req: Request, res: Response) => {
+  try {
+    const { name, email, password } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const userAccount = await SignupModel.create({
+      email: email,
+      password: hashedPassword,
+      name: name,
+      createdAt: Date.now(),
+      modifiedOn: Date.now(),
+    });
+    res.status(201).json({ status: "success", userAccount });
+  } catch (error: any) {
+    let statusCode = 500;
+    let message: string = "internal server error";
+    if (error.code === 11000) {
+      message = "username already exists";
+      statusCode = 404;
+    }
+    console.log("error creating the resource");
+    if (error.name === "ValidationError") {
+      statusCode = 400;
+      message = "validation error";
+    }
+    res.status(statusCode).json({
+      message: message,
+      status: statusCode,
+    });
+  }
+});
+app.post("/login", async (req: Request, res: Response) => {
   console.log(req.query);
   const { username, password, userId } = req.query;
   try {
@@ -137,7 +181,7 @@ const NoteSchema = new Schema<Note & Document>({
 const noteModel = mongoose.model("Notes", NoteSchema);
 app.get(
   "/searchNotes",
-  isAuthenticated,
+  // isAuthenticated,
   async (req: Request, res: Response) => {
     try {
       const page: number = Number(req.params.page) || 1;
@@ -173,7 +217,7 @@ app.get(
 );
 app.put(
   "/saveEditedNote/:id",
-  isAuthenticated,
+  // isAuthenticated,
   async (req: Request, res: Response) => {
     try {
       const saveResult = await noteModel.findByIdAndUpdate(
@@ -191,13 +235,11 @@ app.put(
           message: "Not Found",
         });
       }
-      res
-        .status(200)
-        .json({
-          status: "success",
-          saveResult,
-          message: "updated successfully",
-        });
+      res.status(200).json({
+        status: "success",
+        saveResult,
+        message: "updated successfully",
+      });
     } catch (error: any) {
       console.log(error);
     }
@@ -205,7 +247,7 @@ app.put(
 );
 app.get(
   "/getEditableNote/:id",
-  isAuthenticated,
+  // isAuthenticated,
   async (req: Request, res: Response) => {
     try {
       const editResult = await noteModel.findById(req.params.id);
@@ -224,7 +266,7 @@ app.get(
     }
   }
 );
-app.get("/getNotes", isAuthenticated, async (req: Request, res: Response) => {
+app.get("/getNotes", async (req: Request, res: Response) => {
   try {
     const currentPage = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
@@ -250,7 +292,7 @@ app.get("/getNotes", isAuthenticated, async (req: Request, res: Response) => {
     });
   }
 });
-app.post("/addNotes", isAuthenticated, async (req: Request, res: Response) => {
+app.post("/addNotes", async (req: Request, res: Response) => {
   try {
     console.log(req.body);
     const Notes_to_be_added = await noteModel.create(req.body);
@@ -281,31 +323,7 @@ app.post("/addNotes", isAuthenticated, async (req: Request, res: Response) => {
     }
   }
 });
-app.post("/signup", async (req: Request, res: Response) => {
-  try {
-    console.log(req.body);
-    const signup = await SignupModel.create(req.body);
-    res
-      .status(201)
-      .json({ message: "congrats on your account creation !", data: signup });
-  } catch (error: any) {
-    let statusCode = 500;
-    let message: string = "internal server error";
-    if (error.code === 11000) {
-      message = "username already exists";
-      statusCode = 404;
-    }
-    console.log("error creating the resource");
-    if (error.name === "ValidationError") {
-      statusCode = 400;
-      message = "validation error";
-    }
-    res.status(statusCode).json({
-      message: message,
-      status: statusCode,
-    });
-  }
-});
+
 // const DbString: string =
 const port: number = 5001;
 app.listen(port, () => {
