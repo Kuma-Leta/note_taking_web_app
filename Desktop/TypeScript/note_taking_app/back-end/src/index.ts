@@ -55,9 +55,9 @@ interface signup {
   name: string;
   password: string;
   email: string;
-
   createdAt: Date;
   modifiedOn: Date;
+  // token:ge
 }
 const signupSchema = new Schema<signup & Document>({
   name: {
@@ -117,31 +117,17 @@ app.post("/signup", async (req: Request, res: Response) => {
   }
 });
 app.post("/login", async (req: Request, res: Response) => {
-  console.log(req.query);
-  const { username, password, userId } = req.query;
   try {
-    if (
-      typeof username === "string" &&
-      typeof password === "string" &&
-      typeof userId === "string"
-    ) {
-      const result: any = await SignupModel.findOne({
-        username: username,
-        password: password,
-        userId: userId,
+    const { email, password } = req.body;
+    const userAccount = await SignupModel.findOne({ email });
+    if (userAccount && (await bcrypt.compare(password, userAccount.password))) {
+      res.status(200).json({
+        id: userAccount._id,
+        email: userAccount.email,
+        name: userAccount.name,
       });
-      if (result) {
-        res.status(200).json({
-          status: "success",
-          message: " logged in successfully",
-          data: result,
-        });
-      } else {
-        res.status(404).json({
-          status: "fail",
-          message: "User not found",
-        });
-      }
+    } else {
+      res.status(400).json({ message: "invalid user credential" });
     }
   } catch (error: any) {
     res.status(500).json({
