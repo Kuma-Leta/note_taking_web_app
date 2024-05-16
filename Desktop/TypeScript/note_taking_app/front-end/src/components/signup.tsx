@@ -1,8 +1,8 @@
 import "../styles/signUp.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { signupWithEmailAndPassword } from "./firebaseConfig";
-// import axios from "axios";
+// import { signupWithEmailAndPassword } from "./firebaseConfig";
+import axios from "axios";
 // import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 
@@ -15,7 +15,7 @@ const SignUp: React.FC = () => {
   //   password: string;
   // }
   // let result:object={}
-
+  const [name, setName] = useState("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -29,19 +29,19 @@ const SignUp: React.FC = () => {
       return;
     }
     try {
-      const userCredential = await signupWithEmailAndPassword(email, password);
-      // console.log(userCredential.user);
-      if (userCredential) {
-        setSignupSuccess(true);
-      }
+      const signUpResult = await axios.post("http://localhost:5001/signup", {
+        name,
+        email,
+        password,
+      });
+      setSignupSuccess(true);
+      console.log(signUpResult);
       setTimeout(() => {
         navigate("/login");
       }, 1000);
     } catch (error: any) {
-      if (error.code === "auth/email-already-in-use") {
-        setError("Email is already in use.Try another instead");
-      }
-      setSignupSuccess(false);
+      console.log(error);
+      if (error.response.data) setError(error.response.data.message);
     }
   }
 
@@ -50,6 +50,16 @@ const SignUp: React.FC = () => {
       <div className="signUpForm">
         <form onSubmit={SignUpSubmitHandler} className="form">
           <h2>SIGNUP</h2>
+          <div>
+            <input
+              name="name"
+              placeholder="enter your name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
           <div>
             <input
               name="email"

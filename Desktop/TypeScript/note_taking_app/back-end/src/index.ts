@@ -1,3 +1,4 @@
+import Jwt from "jsonwebtoken";
 // import { auth } from "./../../front-end/src/components/firebaseConfig";
 import express, { Express, NextFunction, Request, Response } from "express";
 import * as admin from "firebase-admin";
@@ -5,8 +6,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();
 import mongoose, { Schema } from "mongoose";
-import { Jwt } from "jsonwebtoken";
+import { protect } from "./middleware/authMiddleware";
 import bcrypt from "bcrypt";
+import { SignupModel, noteModel } from "./models/models";
 const app: Express = express();
 app.use(express.json());
 app.use(cors());
@@ -51,67 +53,50 @@ declare module "express" {
 //     res.status(401).json({ message: "unauthorized" });
 //   }
 // };
-interface signup {
-  name: string;
-  password: string;
-  email: string;
-  createdAt: Date;
-  modifiedOn: Date;
-  // token:ge
-}
-const signupSchema = new Schema<signup & Document>({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    minlength: 6,
-    required: true,
-  },
 
-  email: {
-    type: String,
-    required: [true, "you must provide email"],
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
-  modifiedOn: {
-    type: Date,
-    default: Date.now(),
-  },
-});
-const SignupModel = mongoose.model("Signup", signupSchema);
+const generateToken = (id: string) => {
+  return Jwt.sign({ id }, process.env.JWT_SECRET || "", { expiresIn: "30d" });
+};
 app.post("/signup", async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
     const { name, email, password } = req.body;
+    const userAlreadyExists = await SignupModel.findOne({ email: email });
+    if (userAlreadyExists) {
+      return res.status(400).json({ message: "user already exists" });
+    }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const userAccount = await SignupModel.create({
+    const userAccount = new SignupModel({
       email: email,
       password: hashedPassword,
       name: name,
-      createdAt: Date.now(),
-      modifiedOn: Date.now(),
     });
-    res.status(201).json({ status: "success", userAccount });
+    await userAccount.save();
+    if (userAccount) {
+      res.status(201).json({
+        id: userAccount.id,
+        name: userAccount.name,
+        email: userAccount.email,
+        token: generateToken(userAccount.id),
+      });
+    }
   } catch (error: any) {
+    console.log(error);
     let statusCode = 500;
-    let message: string = "internal server error";
+    let message = "Internal server error";
+
     if (error.code === 11000) {
-      message = "username already exists";
-      statusCode = 404;
-    }
-    console.log("error creating the resource");
-    if (error.name === "ValidationError") {
+      // Handling MongoDB duplicate key error
+      message = "Email already exists";
       statusCode = 400;
-      message = "validation error";
+    } else if (error.name === "ValidationError") {
+      statusCode = 400;
+      message = "Validation error";
     }
+
     res.status(statusCode).json({
-      message: message,
+      message,
       status: statusCode,
     });
   }
@@ -125,6 +110,7 @@ app.post("/login", async (req: Request, res: Response) => {
         id: userAccount._id,
         email: userAccount.email,
         name: userAccount.name,
+        token: generateToken(userAccount.id),
       });
     } else {
       res.status(400).json({ message: "invalid user credential" });
@@ -137,122 +123,8 @@ app.post("/login", async (req: Request, res: Response) => {
     });
   }
 });
-interface Note {
-  title: string;
-  content: string;
-  userID: string;
-  modifiedOn: Date;
-}
-const NoteSchema = new Schema<Note & Document>({
-  title: {
-    type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 50,
-  },
-  content: {
-    type: String,
-    required: true,
-    minlength: 10,
-  },
-  userID: {
-    type: String,
-    required: true,
-  },
-  modifiedOn: {
-    type: Date,
-    required: true,
-  },
-});
-const noteModel = mongoose.model("Notes", NoteSchema);
-app.get(
-  "/searchNotes",
-  // isAuthenticated,
-  async (req: Request, res: Response) => {
-    try {
-      const page: number = Number(req.params.page) || 1;
-      const perPage: number = Number(req.params.pageNumber) || 10;
-      const skip = (page - 1) * perPage;
-      const SearchQuery: string | undefined = req.query.searchQuery as string;
-      const regQuery = new RegExp(SearchQuery, "i");
-      if (!SearchQuery) {
-        return res
-          .status(400)
-          .json({ status: "error", message: "search query required" });
-      }
 
-      const searchResult = await noteModel
-        .find({
-          $or: [
-            { title: { $regex: regQuery } },
-            { content: { $regex: regQuery } },
-          ],
-        })
-        .skip(skip)
-        .limit(perPage);
-      res.status(200).json({
-        status: "success",
-        message: searchResult,
-      });
-    } catch (error) {
-      res
-        .status(500)
-        .json({ status: "error ", message: "Internal Server Error" });
-    }
-  }
-);
-app.put(
-  "/saveEditedNote/:id",
-  // isAuthenticated,
-  async (req: Request, res: Response) => {
-    try {
-      const saveResult = await noteModel.findByIdAndUpdate(
-        req.params.id,
-        {
-          title: req.body.title,
-          content: req.body.content,
-          modifiedOn: req.body.modifiedOn,
-        },
-        { new: true }
-      );
-      if (!saveResult) {
-        return res.status(404).json({
-          status: "fail",
-          message: "Not Found",
-        });
-      }
-      res.status(200).json({
-        status: "success",
-        saveResult,
-        message: "updated successfully",
-      });
-    } catch (error: any) {
-      console.log(error);
-    }
-  }
-);
-app.get(
-  "/getEditableNote/:id",
-  // isAuthenticated,
-  async (req: Request, res: Response) => {
-    try {
-      const editResult = await noteModel.findById(req.params.id);
-      console.log("editable Note:", editResult);
-      if (!editResult) {
-        return res.status(404).json({ status: "fail", message: "not found" });
-      }
-      res.status(200).json({
-        status: "success",
-        result: editResult,
-      });
-    } catch (error: any) {
-      res
-        .status(500)
-        .json({ status: "Error", message: "Internal Server Error" });
-    }
-  }
-);
-app.get("/getNotes", async (req: Request, res: Response) => {
+app.get("/getNotes", protect, async (req: Request, res: Response) => {
   try {
     const currentPage = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
@@ -278,7 +150,7 @@ app.get("/getNotes", async (req: Request, res: Response) => {
     });
   }
 });
-app.post("/addNotes", async (req: Request, res: Response) => {
+app.post("/addNotes", protect, async (req: Request, res: Response) => {
   try {
     console.log(req.body);
     const Notes_to_be_added = await noteModel.create(req.body);
@@ -309,6 +181,91 @@ app.post("/addNotes", async (req: Request, res: Response) => {
     }
   }
 });
+app.get("/searchNotes", protect, async (req: Request, res: Response) => {
+  try {
+    const page: number = Number(req.params.page) || 1;
+    const perPage: number = Number(req.params.pageNumber) || 10;
+    const skip = (page - 1) * perPage;
+    const SearchQuery: string | undefined = req.query.searchQuery as string;
+    const regQuery = new RegExp(SearchQuery, "i");
+    if (!SearchQuery) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "search query required" });
+    }
+
+    const searchResult = await noteModel
+      .find({
+        $or: [
+          { title: { $regex: regQuery } },
+          { content: { $regex: regQuery } },
+        ],
+      })
+      .skip(skip)
+      .limit(perPage);
+    res.status(200).json({
+      status: "success",
+      message: searchResult,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ status: "error ", message: "Internal Server Error" });
+  }
+});
+app.put(
+  "/saveEditedNote/:id",
+  protect,
+  // isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      const saveResult = await noteModel.findByIdAndUpdate(
+        req.params.id,
+        {
+          title: req.body.title,
+          content: req.body.content,
+          modifiedOn: req.body.modifiedOn,
+        },
+        { new: true }
+      );
+      if (!saveResult) {
+        return res.status(404).json({
+          status: "fail",
+          message: "Not Found",
+        });
+      }
+      res.status(200).json({
+        status: "success",
+        saveResult,
+        message: "updated successfully",
+      });
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
+);
+app.get(
+  "/getEditableNote/:id",
+  protect,
+  // isAuthenticated,
+  async (req: Request, res: Response) => {
+    try {
+      const editResult = await noteModel.findById(req.params.id);
+      console.log("editable Note:", editResult);
+      if (!editResult) {
+        return res.status(404).json({ status: "fail", message: "not found" });
+      }
+      res.status(200).json({
+        status: "success",
+        result: editResult,
+      });
+    } catch (error: any) {
+      res
+        .status(500)
+        .json({ status: "Error", message: "Internal Server Error" });
+    }
+  }
+);
 
 // const DbString: string =
 const port: number = 5001;
