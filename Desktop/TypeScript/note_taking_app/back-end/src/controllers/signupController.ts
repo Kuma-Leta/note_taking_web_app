@@ -1,5 +1,5 @@
 import express, { Express, NextFunction, Request, Response } from "express";
-import { SignupModel } from "../models/models";
+import { SignupModel } from "../models/userModel";
 import bcrypt from "bcrypt";
 import { generateToken } from "./generateToken";
 export const signup = async (req: Request, res: Response) => {

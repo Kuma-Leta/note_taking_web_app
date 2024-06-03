@@ -1,4 +1,4 @@
-import { SignupModel } from "../models/models";
+import { SignupModel } from "../models/userModel";
 import express, { Express, NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { generateToken } from "./generateToken";

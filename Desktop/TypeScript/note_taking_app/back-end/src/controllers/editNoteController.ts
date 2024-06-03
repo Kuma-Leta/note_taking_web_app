@@ -1,6 +1,6 @@
 import { AuthenticatedRequest } from "../middleware/authMiddleware";
 import { Response } from "express";
-import { noteModel } from "../models/models";
+import { noteModel } from "../models/noteModel";
 export const saveEditedNote = async (
   req: AuthenticatedRequest,
   res: Response

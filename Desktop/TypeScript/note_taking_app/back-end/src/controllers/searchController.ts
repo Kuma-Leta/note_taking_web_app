@@ -1,6 +1,6 @@
 import { AuthenticatedRequest } from "../middleware/authMiddleware";
 import { Response } from "express";
-import { noteModel } from "../models/models";
+import { noteModel } from "../models/noteModel";
 export const searchNotes = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const page: number = Number(req.params.page) || 1;

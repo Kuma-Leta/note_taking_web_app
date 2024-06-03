@@ -1,4 +1,4 @@
-import { noteModel } from "../models/models";
+import { noteModel } from "../models/noteModel";
 import { AuthenticatedRequest } from "../middleware/authMiddleware";
 import { Response } from "express";
 export const addNote = async (req: AuthenticatedRequest, res: Response) => {
