@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../axiosConfig";
 import { useEffect, FormEvent, useState } from "react";
 import "../styles/editNote.css";
 // interface Note{

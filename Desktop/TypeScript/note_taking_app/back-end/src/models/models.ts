@@ -1,4 +1,4 @@
-import { model } from "mongoose";
+import { model, Document } from "mongoose";
 import mongoose, { Schema } from "mongoose";
 interface signup {
   name: string;
@@ -32,31 +32,34 @@ const signupSchema = new Schema<signup & Document>(
   { timestamps: true }
 );
 export const SignupModel = model("Signup", signupSchema);
-interface Note {
+interface Note extends Document {
+  user: Schema.Types.ObjectId;
   title: string;
   content: string;
-  userID: string;
-  modifiedOn: Date;
+  updatedAt: Date;
+  createdAt: Date;
 }
-const NoteSchema = new Schema<Note & Document>({
-  title: {
-    type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 50,
+const NoteSchema = new Schema<Note & Document>(
+  {
+    title: {
+      type: String,
+      required: true,
+      minlength: 5,
+      maxlength: 50,
+    },
+    content: {
+      type: String,
+      required: true,
+      minlength: 10,
+    },
+    user: {
+      ref: "signup",
+      type: String,
+      required: true,
+    },
   },
-  content: {
-    type: String,
-    required: true,
-    minlength: 10,
-  },
-  userID: {
-    type: String,
-    required: true,
-  },
-  modifiedOn: {
-    type: Date,
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 export const noteModel = mongoose.model("Notes", NoteSchema);

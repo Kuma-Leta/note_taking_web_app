@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/addNotes.css";
-import axios from "axios";
+// import axios from "axios";
+import axios from "../axiosConfig";
 import { useMyContext } from "../myContext";
 import { useNavigate } from "react-router-dom";
 // interface display{
@@ -8,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 //   setAdded:(value:boolean)=>void ;
 // }
 const AddNotes: React.FC = () => {
-  const { added, setNoteAdded, userId } = useMyContext();
+  const { added, setNoteAdded } = useMyContext();
   // useEffect(() => {
   //   setNoteAdded(true);
   // }, []);
@@ -16,8 +17,6 @@ const AddNotes: React.FC = () => {
   interface Note {
     title: string;
     content: string;
-    userID: string;
-    modifiedOn: Date;
   }
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -29,8 +28,6 @@ const AddNotes: React.FC = () => {
       const notes: Note = {
         title: title,
         content: content,
-        userID: userId,
-        modifiedOn: new Date(),
       };
       const Response = await axios.post(
         "http://localhost:5001/addNotes",

@@ -35,6 +35,9 @@ const SignUp: React.FC = () => {
         password,
       });
       setSignupSuccess(true);
+      // After successful login/signup
+      localStorage.setItem("authToken", signUpResult.data.token);
+
       console.log(signUpResult);
       setTimeout(() => {
         navigate("/login");

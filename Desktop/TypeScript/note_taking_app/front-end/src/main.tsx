@@ -5,7 +5,8 @@ import App from "./App";
 // import { GlobalStateProvider } from "./GlobalStateContext";
 import "./styles/index.css";
 import { Router } from "react-router-dom";
-// ReactDOM.createRootimport { Router } from "react-router-dom";
+// ReactDOM.createRootI
+//import { Router } from "react-router-dom";
 // ReactDOM.render(
 //   <React.StrictMode>
 //     <App />

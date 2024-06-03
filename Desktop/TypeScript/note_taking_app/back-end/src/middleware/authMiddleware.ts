@@ -2,15 +2,18 @@ import { Request, Response, NextFunction } from "express";
 import { Document } from "mongoose";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { SignupModel } from "../models/models";
-declare global {
-  namespace Express {
-    interface Request {
-      user?: Document<any, any, any> | null;
-    }
-  }
+// declare global {
+//   namespace Express {
+//     interface Request {
+//       user?: Document<any, any, any> | null;
+//     }
+//   }
+// }
+export interface AuthenticatedRequest extends Request {
+  user?: any;
 }
 export const protect = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ) => {

@@ -1,17 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 // import axios from "axios";
 import React, { useState } from "react";
 import "../styles/login.css";
 import { IoLogoGoogle } from "react-icons/io";
-import { signInWithFirebase } from "./firebaseConfig";
-import { useMyContext } from "../myContext";
+// import { signInWithFirebase } from "./firebaseConfig";
+// import { useMyContext } from "../myContext";
+import axios from "axios";
 
 // import { createContext,useContext } from "react";
 // import { GlobalStateContect } from "../GlobalStateContext";
-interface childProps {
-  updateFunction: (value: boolean) => void;
-}
-const Login: React.FC<childProps> = ({ updateFunction }) => {
+
+const Login: React.FC = () => {
   // const { isLoggedIn, setIsLoggedIn } = useContext(GlobalStateContect);
 
   const [email, setEmail] = useState<string>("");
@@ -19,7 +19,8 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<any>(false);
-  const { setUserId } = useMyContext();
+  // const { setUserId } = useMyContext();
+  const navigate = useNavigate();
   // const [isLoggedIn,setIsLoggedIn]=useState<boolean>(false)
   // interface Login {
   //   username: string;
@@ -45,17 +46,19 @@ const Login: React.FC<childProps> = ({ updateFunction }) => {
         return;
       }
 
-      const userCredential = await signInWithFirebase(email, password);
-      // console.log(userCredential);
+      const userCredential = await axios.post("http://localhost:5001/login", {
+        email,
+        password,
+      });
+      console.log(userCredential);
       if (userCredential) {
         setResult("congratulations ! successfully Logged in");
-        setUserId(userCredential.user.uid);
-        setTimeout(() => updateFunction(true), 2000);
+        // After successful login/signup
+        localStorage.setItem("authToken", userCredential.data.token);
+
+        setTimeout(() => navigate("/previousNotes"), 2000);
       }
     } catch (error: any) {
-      if (error.code === "auth/invalid-credential") {
-        setError("OOps ! Invalid Email or password");
-      }
       // console.log(error);
     }
   }

@@ -11,15 +11,13 @@ import { NotFound } from "./components/NotFound";
 import React, { useState } from "react";
 import { NoteProvider } from "./myContext";
 import { EditNote } from "./components/editNote";
+import PrivateRoute from "./components/privateRoute";
 
 const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // const {userId}=useMyContext()
   // const [userId,setUserId]=useState<string>()
-  const updateLoginStatus = async (status: boolean) => {
-    setIsLoggedIn(status);
-  };
 
   return (
     <div>
@@ -28,21 +26,41 @@ const App: React.FC = () => {
         <NoteProvider>
           <Routes>
             <Route path="/" element={<Home />} />
+
+            <Route path="/login" element={<Login />} />
             <Route
-              path="/login"
+              path="/editNote/:id"
               element={
-                isLoggedIn ? (
-                  <Note />
-                ) : (
-                  <Login updateFunction={updateLoginStatus} />
-                )
+                <PrivateRoute>
+                  <EditNote />
+                </PrivateRoute>
               }
             />
-            <Route path="/editNote/:id" element={<EditNote />} />
-            <Route path="/note" element={<Note />} />
+            <Route
+              path="/note"
+              element={
+                <PrivateRoute>
+                  <Note />
+                </PrivateRoute>
+              }
+            />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/previousNotes" element={<PreviousNotes />} />
-            <Route path="/addNotes" element={<AddNotes />} />
+            <Route
+              path="/previousNotes"
+              element={
+                <PrivateRoute>
+                  <PreviousNotes />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/addNotes"
+              element={
+                <PrivateRoute>
+                  <AddNotes />
+                </PrivateRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </NoteProvider>

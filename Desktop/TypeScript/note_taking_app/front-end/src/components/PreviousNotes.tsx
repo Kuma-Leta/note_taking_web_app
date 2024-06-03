@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../axiosConfig";
 import "../styles/previousNotes.css";
 import { useMyContext } from "../myContext";
 // import AddNotes from "./AddNotes";
@@ -9,7 +9,7 @@ interface Note {
   title: string;
   content: string;
   _id: string;
-  modifiedOn: Date;
+  updatedAt: Date;
 }
 const PreviousNotes: React.FC = () => {
   const navigate = useNavigate();
@@ -92,7 +92,7 @@ const PreviousNotes: React.FC = () => {
             <div className="editBtnContainer">
               <span>
                 modified on:
-                {new Date(note.modifiedOn).toLocaleString("en-US", {
+                {new Date(note.updatedAt).toLocaleString("en-US", {
                   day: "numeric",
                   month: "numeric",
                   year: "numeric",
