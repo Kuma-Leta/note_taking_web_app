@@ -21,22 +21,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState<any>(false);
   // const { setUserId } = useMyContext();
   const navigate = useNavigate();
-  // const [isLoggedIn,setIsLoggedIn]=useState<boolean>(false)
-  // interface Login {
-  //   username: string;
-  //   password: string;
-  // }
-  // function handleUsernameChange(event: React.ChangeEvent<HTMLInputElement>) {
-  //   setUsername(event.target.value);
-  // }
-  // function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>) {
-  //   setPassword(event.target.value);
-  // }
-  // function handleConfirmPasswordChange(
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) {
-  //   setConfirmPassword(event.target.value);
-  // }
+
   async function formSubmitHandler(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     try {
@@ -46,10 +31,13 @@ const Login: React.FC = () => {
         return;
       }
 
-      const userCredential = await axios.post("http://localhost:5001/login", {
-        email,
-        password,
-      });
+      const userCredential = await axios.post(
+        "http://localhost:5001/api/users/login",
+        {
+          email,
+          password,
+        }
+      );
       console.log(userCredential);
       if (userCredential) {
         setResult("congratulations ! successfully Logged in");

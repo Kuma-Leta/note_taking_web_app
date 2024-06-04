@@ -11,8 +11,8 @@ app.use(cors());
 // const port: any = process.env.PORT;
 
 connectDb();
-app.use("api/users", userRoutes);
-app.use("api/users", noteRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/notes", noteRoutes);
 const port: number = 5001;
 app.listen(port, () => {
   console.log(

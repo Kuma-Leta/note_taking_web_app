@@ -27,7 +27,7 @@ const PreviousNotes: React.FC = () => {
       try {
         // console.log(added);
         const result = await axios.get(
-          `http://localhost:5001/getNotes?page=${currentPage}`,
+          `http://localhost:5001/api/notes/getNotes?page=${currentPage}`,
           {
             params: { userId },
           }

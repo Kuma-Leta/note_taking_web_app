@@ -17,7 +17,7 @@ export const EditNote: React.FC = () => {
   useEffect(() => {
     const getEditableNote = async () => {
       const resultBeforeEdited = await axios.get(
-        `http://localhost:5001/getEditableNote/${id}`
+        `http://localhost:5001/api/notes/getEditableNote/${id}`
       );
       setTitle(resultBeforeEdited.data.result.title);
       setContent(resultBeforeEdited.data.result.content);

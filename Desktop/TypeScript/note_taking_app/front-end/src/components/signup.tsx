@@ -29,11 +29,14 @@ const SignUp: React.FC = () => {
       return;
     }
     try {
-      const signUpResult = await axios.post("http://localhost:5001/signup", {
-        name,
-        email,
-        password,
-      });
+      const signUpResult = await axios.post(
+        "http://localhost:5001/api/users/signup",
+        {
+          name,
+          email,
+          password,
+        }
+      );
       setSignupSuccess(true);
       // After successful login/signup
       localStorage.setItem("authToken", signUpResult.data.token);

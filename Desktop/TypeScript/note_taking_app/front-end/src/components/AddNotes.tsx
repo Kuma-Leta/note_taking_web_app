@@ -30,7 +30,7 @@ const AddNotes: React.FC = () => {
         content: content,
       };
       const Response = await axios.post(
-        "http://localhost:5001/addNotes",
+        "http://localhost:5001/api/notes/addNotes",
         notes
       );
       setResult(Response.data);

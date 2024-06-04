@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Document } from "mongoose";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { SignupModel } from "../models/models";
+import { SignupModel } from "../models/userModel";
 // declare global {
 //   namespace Express {
 //     interface Request {
