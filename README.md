@@ -40,13 +40,13 @@ Make sure you have the following installed:
 
    For the server (backend):
    ```sh
-   cd server
+   cd back-end
    npm install
    ```
 
    For the client (frontend):
    ```sh
-   cd ../client
+   cd ../front-end
    npm install
    ```
 
@@ -88,7 +88,7 @@ Make sure you have the following installed:
    npm start
    ```
 
-   The backend server will start on `http://localhost:5000`.
+   The backend server will start on `http://localhost:5001`.
 
 3. Start the frontend development server
 
@@ -98,7 +98,7 @@ Make sure you have the following installed:
    npm run dev
    ```
 
-   The Vite development server will start on `http://localhost:3000`.
+   The Vite development server will start on `http://localhost:5173`.
 
  Building for Production
 
