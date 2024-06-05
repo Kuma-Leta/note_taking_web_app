@@ -32,7 +32,7 @@ Make sure you have the following installed:
 1. Clone the repository**
 
    
-   git clone https://github.com/Kuma-Leta/Note-Taking-Web-App.git
+   git clone https://github.com/Kuma-Leta/note_taking_web_app.git
    cd Note-Taking-Web-App
 
 
