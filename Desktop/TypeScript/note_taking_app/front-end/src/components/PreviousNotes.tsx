@@ -3,8 +3,9 @@ import axios from "../axiosConfig";
 import "../styles/previousNotes.css";
 import { useMyContext } from "../myContext";
 // import AddNotes from "./AddNotes";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Pagination } from "./pagination";
+import "../styles/notes.css";
 interface Note {
   title: string;
   content: string;
@@ -57,7 +58,7 @@ const PreviousNotes: React.FC = () => {
     // });
     try {
       const filteredNotes = await axios.get(
-        "http://localhost:5001/searchNotes",
+        "http://localhost:5001/api/notes/searchNotes",
         {
           params: { searchQuery },
         }
@@ -114,6 +115,11 @@ const PreviousNotes: React.FC = () => {
           handlePageChange={handlePageChange}
           currentPage={currentPage}
         />
+      </div>
+      <div className="btnContainer">
+        <Link to={"/addNotes"} className="addNoteBtn">
+          AddNote
+        </Link>
       </div>
     </div>
   );

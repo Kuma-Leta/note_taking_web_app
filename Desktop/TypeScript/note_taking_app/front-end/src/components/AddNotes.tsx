@@ -36,7 +36,7 @@ const AddNotes: React.FC = () => {
       setResult(Response.data);
       // console.log(Response);
       // console.log(updateNote);
-      setNoteAdded(false);
+      navigate("/previousNotes");
       // console.log(added);
       // setNoteAdded(!added);
     } catch (error: any) {

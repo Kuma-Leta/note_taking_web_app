@@ -2,12 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "../axiosConfig";
 import { useEffect, FormEvent, useState } from "react";
 import "../styles/editNote.css";
-// interface Note{
-//   _id:string;
-// title:string;
-// content:string;
-// // userID:string;
-// }
+
 export const EditNote: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [title, setTitle] = useState("");
@@ -32,7 +27,7 @@ export const EditNote: React.FC = () => {
 
     try {
       const resultAfterEdited = await axios.put(
-        `http://localhost:5001/saveEditedNote/${id}`,
+        `http://localhost:5001/api/notes/saveEditedNote/${id}`,
         { title, content, modifiedOn: new Date() }
       );
       console.log(resultAfterEdited);

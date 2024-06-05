@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import AppError from "../utils/appError";
-const glebalErrorHandler = (
+import { AppError } from "../utils/appError";
+const globalErrorHandler = (
   err: AppError,
   req: Request,
   res: Response,
@@ -10,4 +10,4 @@ const glebalErrorHandler = (
   const status: string = err.status || "error";
   res.status(statusCode).json({ status: err.status, message: err.message });
 };
-export default glebalErrorHandler;
+export default globalErrorHandler;

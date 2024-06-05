@@ -2,7 +2,7 @@ import { SignupModel } from "../models/userModel";
 import express, { Express, NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { generateToken } from "./generateToken";
-import AppError from "../utils/appError";
+import { AppError } from "../utils/appError";
 
 export const login = async (req: Request, res: Response) => {
   console.log(req.body);

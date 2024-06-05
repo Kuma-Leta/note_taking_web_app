@@ -1,7 +1,7 @@
 import { AuthenticatedRequest } from "./../middleware/authMiddleware";
 import express, { Express, NextFunction, Request, Response } from "express";
 import { noteModel } from "../models/noteModel";
-import AppError from "../utils/appError";
+import { AppError } from "../utils/appError";
 
 export const getNotes = async (req: AuthenticatedRequest, res: Response) => {
   const currentPage = parseInt(req.query.page as string) || 1;

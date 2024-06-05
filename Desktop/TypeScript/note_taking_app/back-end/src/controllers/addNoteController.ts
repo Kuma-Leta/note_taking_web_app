@@ -1,7 +1,7 @@
 import { noteModel } from "../models/noteModel";
 import { AuthenticatedRequest } from "../middleware/authMiddleware";
 import { Response } from "express";
-import AppError from "../utils/appError";
+import { AppError } from "../utils/appError";
 export const addNote = async (req: AuthenticatedRequest, res: Response) => {
   const { title, content } = req.body;
   const noteAdded = await noteModel.create({

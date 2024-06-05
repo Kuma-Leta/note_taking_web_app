@@ -7,6 +7,8 @@
   padding: 0.5rem;
   outline: none;
   border: none;
+  justify-content: center;
+  align-items: center;
   /* position: absolute; */
   /* bottom: 0; */
 }

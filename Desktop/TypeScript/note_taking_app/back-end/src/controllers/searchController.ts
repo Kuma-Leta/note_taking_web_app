@@ -1,7 +1,7 @@
 import { AuthenticatedRequest } from "../middleware/authMiddleware";
 import { Response } from "express";
 import { noteModel } from "../models/noteModel";
-import AppError from "../utils/appError";
+import { AppError } from "../utils/appError";
 export const searchNotes = async (req: AuthenticatedRequest, res: Response) => {
   const page: number = Number(req.params.page) || 1;
   const perPage: number = Number(req.params.pageNumber) || 10;
